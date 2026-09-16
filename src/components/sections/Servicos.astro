@@ -1,0 +1,311 @@
+---
+import { siteData } from "../../data/sitedata";
+
+const { etiqueta, titulo, apoio, familias } = siteData.servicos;
+---
+
+<section class="servicos secao grao" id="servicos" aria-labelledby="servicos-titulo">
+  <div class="container">
+    <header class="abertura" data-revelar-grupo>
+      <p class="etiqueta" data-revelar>{etiqueta}</p>
+      <h2 class="titulo-secao" id="servicos-titulo" data-revelar>{titulo}</h2>
+      <p class="texto-apoio abertura-apoio" data-revelar>{apoio}</p>
+    </header>
+
+    {
+      familias.map((familia) => (
+        <div class="familia">
+          <h3 class="familia-nome" data-revelar data-revelar-grupo>
+            <span class="familia-marca" aria-hidden="true" />
+            {familia.nome}
+          </h3>
+
+          <div class="cartoes" data-revelar-grupo>
+            {familia.itens.map((item) => (
+              <article class={`cartao${"imagem" in item ? " cartao--com-imagem" : ""}`} data-revelar>
+                {"imagem" in item && item.imagem && (
+                  <div class="cartao-imagem">
+                    <img src={item.imagem.src} alt={item.imagem.alt} loading="lazy" decoding="async" />
+                  </div>
+                )}
+
+                <div class="cartao-texto">
+                  <h4 class="cartao-nome">{item.nome}</h4>
+                  <p class="cartao-resumo">{item.resumo}</p>
+
+                  <details class="detalhe" name={`servico-${familia.id}`}>
+                    <summary>
+                      <span class="detalhe-rotulo">Ver tudo que entra</span>
+                      <span class="detalhe-contagem">{item.lista.length}</span>
+                    </summary>
+
+                    <div class="detalhe-corpo">
+                      <ul class="lista">
+                        {item.lista.map((linha) => (
+                          <li>{linha}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </details>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .servicos {
+    background: var(--preto-carvao);
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+  }
+
+  .abertura {
+    max-width: 52ch;
+  }
+
+  .titulo-secao {
+    margin-top: 16px;
+  }
+
+  .abertura-apoio {
+    margin-top: 18px;
+  }
+
+  .familia {
+    margin-top: clamp(48px, 7vw, 92px);
+  }
+
+  .familia-nome {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    margin: 0 0 clamp(20px, 2.4vw, 30px);
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--borda);
+
+    font: 500 clamp(15px, 1.3vw, 17px) / 1.2 var(--fonte);
+    letter-spacing: 0.02em;
+    color: var(--texto-suave);
+  }
+
+  .familia-marca {
+    width: 22px;
+    height: 3px;
+    border-radius: 999px;
+    background: var(--brasa);
+  }
+
+  .cartoes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: clamp(14px, 1.6vw, 20px);
+  }
+
+  .cartao {
+    display: flex;
+    flex-direction: column;
+
+    border: 1px solid var(--borda);
+    border-radius: var(--raio-g);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.015));
+
+    overflow: hidden;
+    transition: border-color 0.25s ease, background 0.25s ease;
+  }
+
+  .cartao:hover {
+    border-color: var(--borda-forte);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
+  }
+
+  /* Card com mockup ocupa duas colunas e tem altura própria: a peça precisa
+     de área para ser lida, senão sobra só uma tira dela. */
+  .cartao--com-imagem {
+    grid-column: span 2;
+    flex-direction: row;
+    min-height: 340px;
+  }
+
+  .cartao-imagem {
+    flex: 0 0 38%;
+    position: relative;
+    overflow: hidden;
+    background: #060606;
+  }
+
+  /* Absoluta de propósito: assim a altura do card vem do texto, e a peça não
+     estica a linha inteira da grade atrás dela. */
+  .cartao-imagem img {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+  }
+
+  .cartao-texto {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: clamp(20px, 2vw, 28px);
+  }
+
+  .cartao-nome {
+    margin: 0;
+    font: 700 clamp(19px, 1.5vw, 22px) / 1.2 var(--fonte);
+    letter-spacing: -0.015em;
+    color: var(--branco);
+    text-wrap: balance;
+  }
+
+  .cartao-resumo {
+    margin: 10px 0 0;
+    font: var(--corpo);
+    color: var(--texto-suave);
+    text-wrap: pretty;
+  }
+
+  .detalhe {
+    margin-top: auto;
+    padding-top: 20px;
+  }
+
+  summary {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    width: fit-content;
+    padding: 9px 14px;
+    border: 1px solid var(--borda);
+    border-radius: 999px;
+
+    font: 500 13px / 1 var(--fonte);
+    letter-spacing: 0.01em;
+    color: var(--texto);
+
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+
+    transition: transform 0.1s ease, border-color 0.2s ease, background 0.2s ease;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary:hover {
+    border-color: var(--borda-forte);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  /* Feedback no toque, não na soltura. */
+  summary:active {
+    transform: scale(0.97);
+  }
+
+  summary:focus-visible {
+    outline: 2px solid var(--laranja);
+    outline-offset: 3px;
+  }
+
+  .detalhe-contagem {
+    display: grid;
+    place-items: center;
+
+    min-width: 22px;
+    height: 22px;
+    padding-inline: 6px;
+    border-radius: 999px;
+    background: rgba(237, 32, 39, 0.16);
+
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--laranja);
+  }
+
+  .detalhe[open] .detalhe-rotulo::after {
+    content: " — fechar";
+    color: var(--texto-fraco);
+  }
+
+  /* grid-template-rows anima de verdade, diferente de height:auto. */
+  .detalhe-corpo {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .detalhe[open] .detalhe-corpo {
+    grid-template-rows: 1fr;
+  }
+
+  .lista {
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .lista li {
+    padding: 9px 0 9px 18px;
+    position: relative;
+
+    font: 300 15px / 1.45 var(--fonte);
+    color: var(--texto-suave);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.055);
+  }
+
+  .lista li:first-child {
+    margin-top: 16px;
+  }
+
+  .lista li:last-child {
+    border-bottom: none;
+  }
+
+  .lista li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 18px;
+
+    width: 6px;
+    height: 1px;
+    background: var(--vermelho);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .detalhe-corpo {
+      transition: none;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .cartao--com-imagem {
+      grid-column: span 1;
+      flex-direction: column;
+    }
+
+    .cartao-imagem {
+      flex: none;
+      height: 230px;
+    }
+
+    .cartao-imagem img {
+      object-position: center 20%;
+    }
+  }
+</style>

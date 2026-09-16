@@ -6,151 +6,117 @@ interface Props {
 const { src = `${import.meta.env.BASE_URL}models/ftwo_chess_animated.glb` } = Astro.props;
 ---
 
-<div class="chess-stage" id="chess-stage" data-src={src} aria-hidden="true">
-  <canvas id="chess-canvas"></canvas>
+<div class="palco" data-src={src} aria-hidden="true">
+  <canvas></canvas>
 </div>
 
 <style>
-  .chess-stage {
+  .palco {
     position: relative;
     width: 100%;
     height: 100%;
-
     min-height: 260px;
-
-    opacity: 0;
-    transform: translateY(-14%);
-    transition: opacity 1.1s ease;
-    pointer-events: none;
   }
 
-  .chess-stage.is-ready {
-    opacity: 1;
-  }
-
-  #chess-canvas {
+  canvas {
     display: block;
     width: 100%;
     height: 100%;
   }
 </style>
 
-<script type="importmap" is:inline>
-  {
-    "imports": {
-      "three": "https://unpkg.com/three@0.180.0/build/three.module.js",
-      "three/addons/": "https://unpkg.com/three@0.180.0/examples/jsm/"
-    }
-  }
-</script>
-
-<script type="module" is:inline>
+<script>
   import * as THREE from "three";
-  import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+  import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
-  const stage = document.querySelector("#chess-stage");
-  const canvas = document.querySelector("#chess-canvas");
-  if (!stage || !canvas) throw new Error("Chess stage not found");
+  const palco = document.querySelector<HTMLElement>(".palco");
+  const canvas = palco?.querySelector("canvas");
+  if (palco && canvas) montarCena(palco, canvas);
 
-  const src = stage.dataset.src;
+  function montarCena(palco: HTMLElement, canvas: HTMLCanvasElement) {
+    const reduzirMovimento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(32, 1, 0.01, 100);
+    const cena = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(32, 1, 0.01, 100);
 
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.15;
+    const renderizador = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderizador.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderizador.outputColorSpace = THREE.SRGBColorSpace;
+    renderizador.toneMapping = THREE.ACESFilmicToneMapping;
+    renderizador.toneMappingExposure = 1.15;
 
-  scene.add(new THREE.HemisphereLight(0xffffff, 0x151515, 2.2));
+    cena.add(new THREE.HemisphereLight(0xffffff, 0x151515, 2.2));
 
-  const keyLight = new THREE.DirectionalLight(0xffffff, 4.0);
-  keyLight.position.set(-5, -4, 8);
-  scene.add(keyLight);
+    const luzPrincipal = new THREE.DirectionalLight(0xffffff, 4);
+    luzPrincipal.position.set(-5, -4, 8);
+    cena.add(luzPrincipal);
 
-  const rimLight = new THREE.DirectionalLight(0xff8a5c, 3.2);
-  rimLight.position.set(6, 3, 4);
-  scene.add(rimLight);
+    const luzDeContorno = new THREE.DirectionalLight(0xff7a45, 3.2);
+    luzDeContorno.position.set(6, 3, 4);
+    cena.add(luzDeContorno);
 
-  function resize() {
-    const width = stage.clientWidth || 1;
-    const height = stage.clientHeight || 1;
-    renderer.setSize(width, height, false);
-    camera.aspect = width / height;
-    camera.updateProjectionMatrix();
-  }
+    function redimensionar() {
+      const largura = palco.clientWidth || 1;
+      const altura = palco.clientHeight || 1;
+      renderizador.setSize(largura, altura, false);
+      camera.aspect = largura / altura;
+      camera.updateProjectionMatrix();
+      renderizador.render(cena, camera);
+    }
 
-  const resizeObserver = new ResizeObserver(resize);
-  resizeObserver.observe(stage);
-  resize();
+    new ResizeObserver(redimensionar).observe(palco);
+    redimensionar();
 
-  let model = null;
-  let mixer = null;
+    let mixer: THREE.AnimationMixer | null = null;
 
-  const DROP_DURATION = 1.5;
-  const DROP_START_Y = 7;
-  let dropStart = null;
+    function enquadrar(objeto: THREE.Object3D) {
+      const caixa = new THREE.Box3().setFromObject(objeto);
+      const esfera = caixa.getBoundingSphere(new THREE.Sphere());
+      const distancia = esfera.radius / Math.sin(THREE.MathUtils.degToRad(camera.fov / 2));
 
-  function easeOutCubic(t) {
-    return 1 - Math.pow(1 - t, 3);
-  }
+      camera.position.set(esfera.center.x, esfera.center.y, esfera.center.z + distancia * 0.88);
+      camera.lookAt(esfera.center);
+      camera.near = Math.max(distancia / 100, 0.01);
+      camera.far = distancia * 100;
+      camera.updateProjectionMatrix();
+    }
 
-  function fitCamera(object) {
-    const box = new THREE.Box3().setFromObject(object);
-    const sphere = box.getBoundingSphere(new THREE.Sphere());
-    const distance = sphere.radius / Math.sin(THREE.MathUtils.degToRad(camera.fov / 2));
+    new GLTFLoader().load(palco.dataset.src!, (gltf) => {
+      const modelo = gltf.scene;
+      cena.add(modelo);
+      enquadrar(modelo);
 
-    camera.position.set(sphere.center.x, sphere.center.y, sphere.center.z + distance * 1.18);
-    camera.lookAt(sphere.center);
-    camera.near = Math.max(distance / 100, 0.01);
-    camera.far = distance * 100;
-    camera.updateProjectionMatrix();
-  }
-
-  new GLTFLoader().load(
-    src,
-    (gltf) => {
-      model = gltf.scene;
-      scene.add(model);
-      fitCamera(model);
-
-      if (gltf.animations.length) {
-        mixer = new THREE.AnimationMixer(model);
-        gltf.animations.forEach((clip) => {
-          const action = mixer.clipAction(clip);
-          action.play();
-        });
+      if (gltf.animations.length && !reduzirMovimento) {
+        mixer = new THREE.AnimationMixer(modelo);
+        gltf.animations.forEach((clipe) => mixer!.clipAction(clipe).play());
       }
 
-      model.position.y += DROP_START_Y;
-      stage.classList.add("is-ready");
-    },
-    undefined,
-    (error) => console.error("Falha ao carregar o xadrez FTWO:", error)
-  );
+      renderizador.render(cena, camera);
+    });
 
-  const clock = new THREE.Clock();
+    // Só gira enquanto está à vista: fora da tela não há o que observar, e um
+    // loop de render invisível só gasta bateria.
+    const relogio = new THREE.Clock();
+    let visivel = false;
+    let quadro = 0;
 
-  function animate(time) {
-    requestAnimationFrame(animate);
-    const delta = clock.getDelta();
-
-    if (mixer) mixer.update(delta);
-
-    if (model && model.position.y > 0) {
-      if (dropStart === null) dropStart = time;
-      const elapsed = (time - dropStart) / 1000;
-      const progress = Math.min(elapsed / DROP_DURATION, 1);
-      model.position.y = DROP_START_Y * (1 - easeOutCubic(progress));
+    function girar() {
+      quadro = requestAnimationFrame(girar);
+      if (mixer) mixer.update(relogio.getDelta());
+      renderizador.render(cena, camera);
     }
 
-    renderer.render(scene, camera);
-  }
-  requestAnimationFrame(animate);
+    new IntersectionObserver((entradas) => {
+      const aparece = entradas[0].isIntersecting;
+      if (aparece === visivel) return;
+      visivel = aparece;
 
-  const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-  if (media.matches) {
-    stage.classList.add("is-ready");
+      if (visivel && !reduzirMovimento) {
+        relogio.getDelta();
+        girar();
+      } else {
+        cancelAnimationFrame(quadro);
+      }
+    }).observe(palco);
   }
 </script>

@@ -1,0 +1,82 @@
+---
+import { siteData } from "../../data/sitedata";
+
+const { etiqueta, frases, assinatura } = siteData.manifesto;
+---
+
+<section class="manifesto secao grao" id="manifesto" aria-labelledby="manifesto-titulo">
+  <div class="brilho" aria-hidden="true"></div>
+
+  <div class="container" data-revelar-grupo>
+    <p class="etiqueta" data-revelar>{etiqueta}</p>
+
+    <h2 class="frases" id="manifesto-titulo">
+      {frases.map((frase) => <span class="frase" data-revelar>{frase}</span>)}
+    </h2>
+
+    <p class="assinatura" data-revelar>{assinatura}</p>
+  </div>
+</section>
+
+<style>
+  .manifesto {
+    background: var(--preto);
+    overflow: hidden;
+  }
+
+  /* O gradiente da intro volta aqui, mas rebaixado: presença, não protagonismo. */
+  .brilho {
+    position: absolute;
+    z-index: 0;
+    inset: -30% -10% auto;
+    height: 130%;
+
+    background: radial-gradient(
+      ellipse at 30% 40%,
+      rgba(237, 32, 39, 0.24) 0%,
+      rgba(255, 107, 50, 0.12) 32%,
+      transparent 62%
+    );
+
+    filter: blur(28px);
+    pointer-events: none;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+  }
+
+  .frases {
+    margin: clamp(22px, 3vw, 38px) 0 0;
+    max-width: 22ch;
+
+    font: var(--titulo);
+    letter-spacing: var(--titulo-track);
+    color: var(--branco);
+  }
+
+  .frase {
+    display: block;
+    text-wrap: balance;
+  }
+
+  .frase:not(:first-child) {
+    margin-top: clamp(12px, 1.4vw, 20px);
+    color: var(--texto);
+  }
+
+  .assinatura {
+    margin: clamp(30px, 4vw, 52px) 0 0;
+
+    font: var(--subtitulo);
+    letter-spacing: var(--subtitulo-track);
+    color: var(--vermelho);
+  }
+
+  @media (max-width: 900px) {
+    .frases {
+      max-width: 100%;
+    }
+  }
+</style>

@@ -1,0 +1,317 @@
+---
+import { siteData } from "../../data/sitedata";
+
+const { etiqueta, titulo, apoio, telefone, whatsapp, site, botao, disclaimer, campos } =
+  siteData.contato;
+
+const telefoneLink = `https://wa.me/${whatsapp}`;
+---
+
+<section class="contato secao grao" id="contato" aria-labelledby="contato-titulo">
+  <div class="brilho" aria-hidden="true"></div>
+
+  <div class="container grade">
+    <div class="lado" data-revelar-grupo>
+      <p class="etiqueta" data-revelar>{etiqueta}</p>
+
+      <h2 class="titulo" id="contato-titulo" data-revelar>
+        {titulo.map((linha) => <span class="linha">{linha}</span>)}
+      </h2>
+
+      <p class="texto-apoio apoio" data-revelar>{apoio}</p>
+
+      <div class="atalhos" data-revelar>
+        <a class="atalho" href={telefoneLink} target="_blank" rel="noopener">
+          <span class="atalho-rotulo">WhatsApp</span>
+          <span class="atalho-valor">{telefone}</span>
+        </a>
+        <a class="atalho" href={`https://${site}`} target="_blank" rel="noopener">
+          <span class="atalho-rotulo">Site</span>
+          <span class="atalho-valor">{site}</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="cartao" data-revelar>
+      <form id="form-lead" novalidate>
+        {
+          campos.map((campo) => (
+            <label class="campo">
+              <span>{campo.label}</span>
+              <input
+                type={campo.type}
+                name={campo.name}
+                placeholder={campo.placeholder}
+                autocomplete={campo.autocomplete}
+                inputmode={campo.name === "telefone" || campo.name === "cnpj" ? "numeric" : undefined}
+                maxlength={campo.name === "telefone" ? 15 : campo.name === "cnpj" ? 18 : undefined}
+                required
+              />
+            </label>
+          ))
+        }
+
+        <button type="submit" class="enviar">
+          {botao}
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path
+              d="M5 12h14M13 6l6 6-6 6"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button>
+
+        <p class="disclaimer">{disclaimer}</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contato {
+    background: var(--preto);
+    overflow: hidden;
+  }
+
+  /* O gradiente da intro volta inteiro aqui: a página fecha o ciclo onde abriu. */
+  .brilho {
+    position: absolute;
+    z-index: 0;
+    inset: -20% -20% auto -20%;
+    height: 140%;
+
+    background:
+      radial-gradient(ellipse at 18% 30%, rgba(237, 32, 39, 0.34) 0%, transparent 52%),
+      radial-gradient(ellipse at 72% 78%, rgba(255, 107, 50, 0.22) 0%, transparent 55%),
+      radial-gradient(ellipse at 45% 110%, rgba(38, 95, 105, 0.32) 0%, transparent 50%);
+
+    filter: blur(30px);
+    pointer-events: none;
+  }
+
+  .grade {
+    position: relative;
+    z-index: 1;
+
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 440px);
+    align-items: center;
+    gap: clamp(36px, 6vw, 80px);
+  }
+
+  .titulo {
+    margin: 18px 0 0;
+    font: var(--display);
+    letter-spacing: var(--display-track);
+    color: var(--branco);
+  }
+
+  .linha {
+    display: block;
+  }
+
+  .apoio {
+    margin-top: clamp(16px, 2vw, 24px);
+    max-width: 42ch;
+  }
+
+  .atalhos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: clamp(26px, 3vw, 38px);
+  }
+
+  .atalho {
+    display: grid;
+    gap: 4px;
+
+    padding: 14px 20px;
+    border: 1px solid var(--borda);
+    border-radius: var(--raio-p);
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    text-decoration: none;
+    transition: transform 0.1s ease, border-color 0.22s ease, background 0.22s ease;
+  }
+
+  .atalho:hover {
+    border-color: var(--borda-forte);
+    background: rgba(0, 0, 0, 0.45);
+  }
+
+  .atalho:active {
+    transform: scale(0.985);
+  }
+
+  .atalho-rotulo {
+    font: var(--etiqueta);
+    letter-spacing: var(--etiqueta-track);
+    text-transform: uppercase;
+    color: var(--texto-fraco);
+  }
+
+  .atalho-valor {
+    font: 500 16px / 1.2 var(--fonte);
+    color: var(--branco);
+  }
+
+  .cartao {
+    padding: clamp(26px, 2.6vw, 36px);
+    border: 1px solid var(--borda);
+    border-radius: var(--raio-g);
+
+    /* Camada translúcida sobre o gradiente, não um bloco opaco por cima. */
+    background: linear-gradient(180deg, rgba(14, 14, 14, 0.76), rgba(6, 6, 6, 0.84));
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: var(--sombra-card);
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .campo {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .campo span {
+    font: var(--etiqueta);
+    letter-spacing: var(--etiqueta-track);
+    text-transform: uppercase;
+    color: var(--texto-fraco);
+  }
+
+  .campo input {
+    appearance: none;
+    width: 100%;
+
+    padding: 14px 15px;
+    border: 1px solid var(--borda);
+    border-radius: var(--raio-p);
+    background: rgba(255, 255, 255, 0.05);
+
+    font: 400 15px / 1.2 var(--fonte);
+    color: var(--branco);
+
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+
+  .campo input::placeholder {
+    color: rgba(255, 255, 255, 0.26);
+  }
+
+  .campo input:focus {
+    outline: none;
+    border-color: var(--laranja);
+    background: rgba(255, 107, 50, 0.08);
+  }
+
+  .campo input:user-invalid {
+    border-color: rgba(255, 90, 90, 0.6);
+  }
+
+  .enviar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    margin-top: 6px;
+    padding: 16px 22px;
+    border: none;
+    border-radius: 999px;
+    background: var(--brasa);
+
+    font: 700 15px / 1 var(--fonte);
+    color: #1a0500;
+
+    cursor: pointer;
+    transition: transform 0.1s ease, filter 0.22s ease, box-shadow 0.22s ease;
+    box-shadow: 0 14px 30px -12px rgba(237, 32, 39, 0.7);
+  }
+
+  .enviar svg {
+    transition: transform 0.22s ease;
+  }
+
+  .enviar:hover {
+    filter: brightness(1.06);
+  }
+
+  .enviar:hover svg {
+    transform: translateX(3px);
+  }
+
+  .enviar:active {
+    transform: scale(0.98);
+  }
+
+  .disclaimer {
+    margin: 2px 0 0;
+    font: 300 12px / 1.5 var(--fonte);
+    color: var(--texto-fraco);
+    text-align: center;
+  }
+
+  @media (max-width: 900px) {
+    .grade {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  import { siteData } from "../../data/sitedata";
+
+  const form = document.querySelector<HTMLFormElement>("#form-lead");
+  if (form) ligarFormulario(form);
+
+  function ligarFormulario(form: HTMLFormElement) {
+    const telefone = form.querySelector<HTMLInputElement>('input[name="telefone"]');
+    const cnpj = form.querySelector<HTMLInputElement>('input[name="cnpj"]');
+
+    telefone?.addEventListener("input", () => {
+      let d = telefone.value.replace(/\D/g, "").slice(0, 11);
+      if (d.length > 6) d = d.replace(/^(\d{2})(\d{5})(\d{0,4}).*/, "($1) $2-$3");
+      else if (d.length > 2) d = d.replace(/^(\d{2})(\d{0,5}).*/, "($1) $2");
+      else if (d.length > 0) d = d.replace(/^(\d{0,2}).*/, "($1");
+      telefone.value = d;
+    });
+
+    cnpj?.addEventListener("input", () => {
+      cnpj.value = cnpj.value
+        .replace(/\D/g, "")
+        .slice(0, 14)
+        .replace(/^(\d{2})(\d)/, "$1.$2")
+        .replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3")
+        .replace(/\.(\d{3})(\d)/, ".$1/$2")
+        .replace(/(\d{4})(\d)/, "$1-$2");
+    });
+
+    form.addEventListener("submit", (evento) => {
+      evento.preventDefault();
+      if (!form.reportValidity()) return;
+
+      const dados = new FormData(form);
+      const linhas = siteData.contato.campos.map(
+        (campo) => `${campo.label}: ${String(dados.get(campo.name) ?? "").trim()}`
+      );
+
+      const mensagem = `Olá! Quero estruturar meu negócio com a FTWO.\n\n${linhas.join("\n")}`;
+      const url = `https://wa.me/${siteData.contato.whatsapp}?text=${encodeURIComponent(mensagem)}`;
+
+      window.open(url, "_blank", "noopener");
+    });
+  }
+</script>

@@ -1,0 +1,195 @@
+---
+import logoSvg from "../../public/ftwo-logo.svg?raw";
+import { siteData } from "../data/sitedata";
+
+const { logoAlt } = siteData.hero;
+
+const links = [
+  { rotulo: "Serviços", href: "#servicos" },
+  { rotulo: "Como trabalhamos", href: "#como-trabalhamos" },
+  { rotulo: "Time", href: "#time" },
+  { rotulo: "Planos", href: "#planos" },
+];
+---
+
+<header class="barra" id="barra" data-oculta>
+  <nav class="interna" aria-label="Navegação principal">
+    <a class="marca" href="#topo" aria-label={logoAlt}>
+      <span class="marca-svg" aria-hidden="true" set:html={logoSvg} />
+    </a>
+
+    <ul class="links">
+      {
+        links.map((link) => (
+          <li>
+            <a href={link.href}>{link.rotulo}</a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <a class="cta" href="#contato">Vamos conversar</a>
+  </nav>
+</header>
+
+<style>
+  .barra {
+    position: fixed;
+    z-index: 50;
+    top: 0;
+    left: 0;
+    right: 0;
+
+    /* Camada translúcida com o conteúdo passando por baixo, em vez de uma
+       faixa opaca que come uma tira da tela. */
+    background: rgba(6, 6, 6, 0.6);
+    backdrop-filter: blur(18px) saturate(150%);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    border-bottom: 1px solid var(--borda);
+
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease;
+  }
+
+  /* Fica fora do caminho enquanto a intro se monta. */
+  .barra[data-oculta] {
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .interna {
+    display: flex;
+    align-items: center;
+    gap: clamp(16px, 3vw, 40px);
+
+    width: 100%;
+    max-width: var(--container);
+    margin-inline: auto;
+    padding: 14px var(--gutter);
+  }
+
+  .marca {
+    flex: none;
+    display: block;
+    width: 74px;
+    line-height: 0;
+    transition: transform 0.1s ease, opacity 0.2s ease;
+  }
+
+  .marca:active {
+    transform: scale(0.96);
+  }
+
+  .marca-svg :global(svg) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .marca-svg :global(path) {
+    fill: var(--branco);
+  }
+
+  .links {
+    display: flex;
+    flex: 1;
+    gap: clamp(14px, 2vw, 30px);
+
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .links a {
+    position: relative;
+    display: block;
+    padding: 6px 0;
+
+    font: 400 14px / 1.2 var(--fonte);
+    color: var(--texto-suave);
+    text-decoration: none;
+
+    transition: color 0.2s ease;
+  }
+
+  .links a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 1px;
+    background: var(--vermelho);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .links a:hover {
+    color: var(--branco);
+  }
+
+  .links a:hover::after {
+    transform: scaleX(1);
+  }
+
+  .cta {
+    flex: none;
+    padding: 10px 18px;
+    border: 1px solid var(--borda-forte);
+    border-radius: 999px;
+
+    font: 500 14px / 1 var(--fonte);
+    color: var(--branco);
+    text-decoration: none;
+    white-space: nowrap;
+
+    transition: transform 0.1s ease, background 0.22s ease, border-color 0.22s ease;
+  }
+
+  .cta:hover {
+    background: var(--brasa);
+    border-color: transparent;
+    color: #1a0500;
+  }
+
+  /* Feedback no toque, não na soltura. */
+  .cta:active {
+    transform: scale(0.97);
+  }
+
+  @media (max-width: 860px) {
+    .links {
+      display: none;
+    }
+
+    .interna {
+      justify-content: space-between;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .barra {
+      transition: opacity 0.2s ease;
+    }
+
+    .barra[data-oculta] {
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  const barra = document.querySelector<HTMLElement>("#barra");
+  const heroi = document.querySelector<HTMLElement>(".hero");
+
+  if (barra && heroi) {
+    // A barra entra quando a intro sai de cena — durante a montagem da logo
+    // ela só competiria com o que está acontecendo no centro da tela.
+    new IntersectionObserver(
+      ([entrada]) => barra.toggleAttribute("data-oculta", entrada.isIntersecting),
+      { threshold: 0.35 }
+    ).observe(heroi);
+  }
+</script>

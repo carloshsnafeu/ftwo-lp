@@ -1,0 +1,113 @@
+---
+import { siteData } from "../../data/sitedata";
+
+const { etiqueta, titulo, etapas } = siteData.cronograma;
+---
+
+<section class="cronograma secao grao" id="como-trabalhamos" aria-labelledby="cronograma-titulo">
+  <div class="container grade">
+    <header class="abertura" data-revelar-grupo>
+      <p class="etiqueta" data-revelar>{etiqueta}</p>
+      <h2 class="titulo" id="cronograma-titulo" data-revelar>{titulo}</h2>
+    </header>
+
+    <ol class="etapas" data-revelar-grupo>
+      {
+        etapas.map((etapa, i) => (
+          <li class="etapa" data-revelar>
+            <span class="numero" aria-hidden="true">
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <div class="etapa-texto">
+              <h3 class="etapa-nome">{etapa.nome}</h3>
+              <p class="etapa-apoio">{etapa.apoio}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .cronograma {
+    background: var(--preto);
+  }
+
+  .grade {
+    position: relative;
+    z-index: 1;
+
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(36px, 6vw, 88px);
+    align-items: start;
+  }
+
+  .titulo {
+    margin: 16px 0 0;
+    font: var(--display);
+    letter-spacing: var(--display-track);
+    color: var(--branco);
+  }
+
+  .etapas {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    /* A linha que costura as etapas nasce do próprio recuo do número. */
+    border-left: 1px solid var(--borda);
+  }
+
+  .etapa {
+    position: relative;
+    display: flex;
+    align-items: baseline;
+    gap: clamp(16px, 2vw, 28px);
+
+    padding: clamp(18px, 2.2vw, 26px) 0 clamp(18px, 2.2vw, 26px) clamp(20px, 2.4vw, 32px);
+  }
+
+  .etapa:not(:last-child) {
+    border-bottom: 1px solid var(--borda);
+  }
+
+  .etapa::before {
+    content: "";
+    position: absolute;
+    left: -3px;
+    top: calc(clamp(18px, 2.2vw, 26px) + 0.62em);
+
+    width: 5px;
+    height: 5px;
+    border-radius: 999px;
+    background: var(--vermelho);
+  }
+
+  .numero {
+    font: 500 13px / 1 var(--fonte);
+    letter-spacing: 0.1em;
+    color: var(--vermelho);
+  }
+
+  .etapa-nome {
+    margin: 0;
+    font: 500 clamp(21px, 2.2vw, 30px) / 1.15 var(--fonte);
+    letter-spacing: -0.02em;
+    color: var(--branco);
+  }
+
+  .etapa-apoio {
+    margin: 8px 0 0;
+    font: 300 14px / 1.4 var(--fonte);
+    color: var(--texto-fraco);
+  }
+
+  @media (max-width: 900px) {
+    .grade {
+      grid-template-columns: 1fr;
+      gap: 34px;
+    }
+  }
+</style>

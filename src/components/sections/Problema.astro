@@ -1,0 +1,84 @@
+---
+import ChessScene from "../ChessScene.astro";
+import { siteData } from "../../data/sitedata";
+
+const { etiqueta, dado, destaque, apoio } = siteData.problema;
+---
+
+<section class="problema secao grao" id="problema" aria-labelledby="problema-titulo">
+  <div class="container grade" data-revelar-grupo>
+    <div class="texto">
+      <p class="etiqueta" data-revelar>{etiqueta}</p>
+
+      <h2 class="dado" id="problema-titulo" data-revelar>
+        {dado.map((linha) => <span class="linha">{linha}</span>)}
+      </h2>
+
+      <p class="destaque" data-revelar>{destaque}</p>
+      <p class="texto-apoio apoio" data-revelar>{apoio}</p>
+    </div>
+
+    <div class="cena" data-revelar>
+      <ChessScene />
+    </div>
+  </div>
+</section>
+
+<style>
+  .problema {
+    background: var(--preto);
+    overflow: hidden;
+  }
+
+  .grade {
+    position: relative;
+    z-index: 1;
+
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+    align-items: center;
+    gap: clamp(32px, 6vw, 88px);
+  }
+
+  .dado {
+    margin: 18px 0 0;
+    font: var(--display);
+    letter-spacing: var(--display-track);
+    color: var(--branco);
+  }
+
+  .linha {
+    display: block;
+  }
+
+  .destaque {
+    margin: clamp(20px, 2.6vw, 34px) 0 0;
+    font: var(--subtitulo);
+    letter-spacing: var(--subtitulo-track);
+    color: var(--vermelho);
+    text-wrap: balance;
+  }
+
+  .apoio {
+    margin-top: clamp(16px, 1.8vw, 24px);
+    max-width: 46ch;
+  }
+
+  .cena {
+    aspect-ratio: 1;
+    min-height: 320px;
+  }
+
+  @media (max-width: 900px) {
+    .grade {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+
+    .cena {
+      order: -1;
+      min-height: 260px;
+      aspect-ratio: 1.1;
+    }
+  }
+</style>

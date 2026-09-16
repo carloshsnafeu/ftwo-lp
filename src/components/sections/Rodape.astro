@@ -1,0 +1,58 @@
+---
+import logoSvg from "../../../public/ftwo-logo.svg?raw";
+import { siteData } from "../../data/sitedata";
+
+const { telefone, site } = siteData.contato;
+const ano = new Date().getFullYear();
+---
+
+<footer class="rodape">
+  <div class="container linha">
+    <span class="marca" role="img" aria-label="ftwo Digital" set:html={logoSvg} />
+
+    <p class="contato">
+      {telefone} · {site}
+    </p>
+
+    <p class="direitos">© {ano} FTWO Digital</p>
+  </div>
+</footer>
+
+<style>
+  .rodape {
+    border-top: 1px solid var(--borda);
+    background: var(--preto);
+    padding-block: clamp(28px, 4vw, 44px);
+  }
+
+  .linha {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .marca {
+    display: block;
+    width: 92px;
+    line-height: 0;
+  }
+
+  .marca :global(svg) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .marca :global(path) {
+    fill: var(--texto-suave);
+  }
+
+  .contato,
+  .direitos {
+    margin: 0;
+    font: 300 13px / 1.4 var(--fonte);
+    color: var(--texto-fraco);
+  }
+</style>

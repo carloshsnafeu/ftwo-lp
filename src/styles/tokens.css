@@ -1,0 +1,118 @@
+:root {
+  /* Cor */
+  --preto: #000;
+  --preto-carvao: #0a0a0a;
+  --grafite: #141414;
+  --borda: rgba(255, 255, 255, 0.1);
+  --borda-forte: rgba(255, 255, 255, 0.18);
+
+  --branco: #fff;
+  --texto: rgba(255, 255, 255, 0.88);
+  --texto-suave: rgba(255, 255, 255, 0.58);
+  --texto-fraco: rgba(255, 255, 255, 0.38);
+
+  --vermelho: #ed2027;
+  --laranja: #ff6b32;
+  --ambar: #ffac43;
+  --brasa: linear-gradient(95deg, var(--ambar), var(--laranja) 45%, var(--vermelho));
+
+  /* Tipografia — tracking acompanha o tamanho: display fecha, corpo fica neutro */
+  --fonte: "Neue Montreal", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  --display: 700 clamp(38px, 5.6vw, 84px) / 0.95 var(--fonte);
+  --display-track: -0.035em;
+
+  --titulo: 700 clamp(30px, 3.6vw, 52px) / 1.04 var(--fonte);
+  --titulo-track: -0.025em;
+
+  /* Abaixo do display o tracking abre: texto menor precisa de ar entre as
+     letras para continuar legível. */
+  --subtitulo: 500 clamp(20px, 2vw, 27px) / 1.32 var(--fonte);
+  --subtitulo-track: 0.004em;
+
+  --corpo: 300 clamp(16px, 1.25vw, 18px) / 1.68 var(--fonte);
+  --corpo-track: 0.014em;
+
+  --etiqueta: 500 12px / 1.2 var(--fonte);
+  --etiqueta-track: 0.16em;
+
+  /* Ritmo vertical e largura */
+  --secao-y: clamp(96px, 13vh, 180px);
+  --gutter: clamp(20px, 5vw, 72px);
+  --container: 1280px;
+
+  /* Acabamento */
+  --raio-p: 14px;
+  --raio-g: 24px;
+  --sombra-flutuante: 0 18px 38px rgba(0, 0, 0, 0.45);
+  --sombra-card: 0 24px 60px -24px rgba(0, 0, 0, 0.8);
+}
+
+.secao {
+  position: relative;
+  padding-block: var(--secao-y);
+
+  /* A barra fixa cobriria o topo da seção ao pular por um link do menu. */
+  scroll-margin-top: 76px;
+}
+
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.etiqueta {
+  margin: 0;
+  font: var(--etiqueta);
+  letter-spacing: var(--etiqueta-track);
+  text-transform: uppercase;
+  color: var(--vermelho);
+}
+
+.titulo-secao {
+  margin: 0;
+  font: var(--titulo);
+  letter-spacing: var(--titulo-track);
+  color: var(--branco);
+  text-wrap: balance;
+}
+
+.texto-apoio {
+  margin: 0;
+  font: var(--corpo);
+  letter-spacing: var(--corpo-track);
+  color: var(--texto-suave);
+  text-wrap: pretty;
+}
+
+/* Grão — mesma textura da intro, estendida ao site todo para dar unidade. */
+.grao::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+
+  pointer-events: none;
+  opacity: 0.2;
+  mix-blend-mode: soft-light;
+
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+
+/* Estado inicial das entradas por scroll. Só esconde quando há JS para
+   revelar de volta — sem script, o conteúdo aparece normalmente. */
+.js [data-revelar] {
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js [data-revelar] {
+    opacity: 1;
+    transform: none;
+    will-change: auto;
+  }
+}

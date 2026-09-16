@@ -1,0 +1,201 @@
+---
+import { siteData } from "../../data/sitedata";
+
+const { etiqueta, titulo, apoio, itens, nota } = siteData.planos;
+---
+
+<section class="planos secao grao" id="planos" aria-labelledby="planos-titulo">
+  <div class="container">
+    <header class="abertura" data-revelar-grupo>
+      <p class="etiqueta" data-revelar>{etiqueta}</p>
+      <h2 class="titulo-secao" id="planos-titulo" data-revelar>{titulo}</h2>
+      <p class="texto-apoio abertura-apoio" data-revelar>{apoio}</p>
+    </header>
+
+    <div class="cartoes" data-revelar-grupo>
+      {
+        itens.map((plano) => (
+          <article class={`plano${"destaque" in plano && plano.destaque ? " plano--destaque" : ""}`} data-revelar>
+            {"destaque" in plano && plano.destaque && <span class="selo">Mais escolhido</span>}
+
+            <h3 class="plano-nome">{plano.nome}</h3>
+            <p class="plano-para">{plano.para}</p>
+
+            <ul class="inclui">
+              {plano.inclui.map((linha) => (
+                <li>{linha}</li>
+              ))}
+            </ul>
+
+            <a class="plano-cta" href="#contato">
+              Quero este plano
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path
+                  d="M5 12h14M13 6l6 6-6 6"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </a>
+          </article>
+        ))
+      }
+    </div>
+
+    <p class="nota" data-revelar>{nota}</p>
+  </div>
+</section>
+
+<style>
+  .planos {
+    background: var(--preto);
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+  }
+
+  .abertura {
+    max-width: 48ch;
+  }
+
+  .titulo-secao {
+    margin-top: 16px;
+  }
+
+  .abertura-apoio {
+    margin-top: 18px;
+  }
+
+  .cartoes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: clamp(14px, 1.6vw, 20px);
+    align-items: stretch;
+
+    margin-top: clamp(38px, 5vw, 60px);
+  }
+
+  .plano {
+    display: flex;
+    flex-direction: column;
+
+    padding: clamp(24px, 2.6vw, 34px);
+    border: 1px solid var(--borda);
+    border-radius: var(--raio-g);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.012));
+  }
+
+  .plano--destaque {
+    border-color: rgba(237, 32, 39, 0.5);
+    background: linear-gradient(180deg, rgba(237, 32, 39, 0.1), rgba(255, 107, 50, 0.03));
+    box-shadow: var(--sombra-card);
+  }
+
+  .selo {
+    align-self: flex-start;
+    margin-bottom: 14px;
+    padding: 6px 11px;
+    border-radius: 999px;
+    background: var(--brasa);
+
+    font: 500 11px / 1 var(--fonte);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #1a0500;
+  }
+
+  .plano-nome {
+    margin: 0;
+    font: 700 clamp(26px, 2.6vw, 36px) / 1 var(--fonte);
+    letter-spacing: -0.03em;
+    color: var(--branco);
+  }
+
+  .plano-para {
+    margin: 14px 0 0;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--borda);
+
+    font: 300 15px / 1.5 var(--fonte);
+    color: var(--texto-suave);
+    text-wrap: pretty;
+  }
+
+  .inclui {
+    flex: 1;
+    margin: 20px 0 26px;
+    padding: 0;
+    list-style: none;
+  }
+
+  .inclui li {
+    position: relative;
+    padding: 7px 0 7px 20px;
+
+    font: 300 15px / 1.45 var(--fonte);
+    color: var(--texto);
+  }
+
+  .inclui li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 15px;
+
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    border: 1.5px solid var(--vermelho);
+  }
+
+  .plano-cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    padding: 14px 20px;
+    border: 1px solid var(--borda-forte);
+    border-radius: 999px;
+
+    font: 500 15px / 1 var(--fonte);
+    color: var(--branco);
+    text-decoration: none;
+
+    transition: transform 0.1s ease, background 0.22s ease, border-color 0.22s ease;
+  }
+
+  .plano-cta svg {
+    transition: transform 0.22s ease;
+  }
+
+  .plano-cta:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: var(--branco);
+  }
+
+  .plano-cta:hover svg {
+    transform: translateX(3px);
+  }
+
+  .plano-cta:active {
+    transform: scale(0.98);
+  }
+
+  .plano--destaque .plano-cta {
+    border-color: transparent;
+    background: var(--brasa);
+    color: #1a0500;
+    font-weight: 700;
+  }
+
+  .nota {
+    margin: clamp(24px, 3vw, 34px) 0 0;
+    font: 300 13px / 1.5 var(--fonte);
+    color: var(--texto-fraco);
+  }
+</style>

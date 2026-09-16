@@ -1,6 +1,20 @@
 ---
+import Navbar from "../components/Navbar.astro";
 import AnimatedHero from "../components/AnimatedHero.astro";
+import Problema from "../components/sections/Problema.astro";
+import Manifesto from "../components/sections/Manifesto.astro";
+import Servicos from "../components/sections/Servicos.astro";
+import Cronograma from "../components/sections/Cronograma.astro";
+import Time from "../components/sections/Time.astro";
+import Planos from "../components/sections/Planos.astro";
+import Contato from "../components/sections/Contato.astro";
+import Rodape from "../components/sections/Rodape.astro";
+import { siteData } from "../data/sitedata";
+
 import "../styles/fonts.css";
+import "../styles/tokens.css";
+
+const { title, description, themeColor } = siteData.meta;
 ---
 
 <!doctype html>
@@ -8,17 +22,55 @@ import "../styles/fonts.css";
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <title>ftwo</title>
-    <meta name="description" content="ftwo Digital — criatividade em movimento." />
-    <meta name="theme-color" content="#000000" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content={themeColor} />
+
+    <link
+      rel="preload"
+      href="/fonts/neue-montreal/NeueMontreal-Regular.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/neue-montreal/NeueMontreal-Bold.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    <!-- Marca antes da primeira pintura: sem isso o conteúdo pisca visível
+         antes do script de revelação assumir. -->
+    <script is:inline>
+      document.documentElement.classList.add("js");
+    </script>
   </head>
 
-  <body>
+  <body id="topo">
+    <Navbar />
+
     <main>
       <AnimatedHero />
+      <Problema />
+      <Manifesto />
+      <Servicos />
+      <Cronograma />
+      <Time />
+      <Planos />
+      <Contato />
     </main>
+
+    <Rodape />
   </body>
 </html>
+
+<script>
+  import { iniciarRevelacoes } from "../scripts/revelar";
+
+  iniciarRevelacoes();
+</script>
 
 <style is:global>
   *,
@@ -27,17 +79,33 @@ import "../styles/fonts.css";
     box-sizing: border-box;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   html,
   body {
     margin: 0;
     padding: 0;
     width: 100%;
     overflow-x: hidden;
-    background: #000;
-    color: #fff;
+    background: var(--preto);
+    color: var(--texto);
   }
 
   body {
-    font-family: "Neue Montreal", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family: var(--fonte);
+    -webkit-font-smoothing: antialiased;
+
+    /* Tracking base para tudo que é texto pequeno — títulos e display
+       sobrescrevem com valores negativos. letter-spacing é herdado e não é
+       zerado pelo atalho `font`, então esta linha alcança o site inteiro. */
+    letter-spacing: 0.014em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
   }
 </style>
