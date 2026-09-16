@@ -15,7 +15,15 @@ const { etiqueta, titulo, pessoas } = siteData.time;
       {
         pessoas.map((pessoa) => (
           <article class="pessoa" data-revelar>
-            <img class="retrato" src={pessoa.foto} alt={pessoa.nome} loading="lazy" decoding="async" />
+            <img
+              class="retrato"
+              src={pessoa.foto}
+              alt={pessoa.nome}
+              width={pessoa.fotoW}
+              height={pessoa.fotoH}
+              loading="lazy"
+              decoding="async"
+            />
 
             <div class="pessoa-texto">
               {pessoa.bio.map((paragrafo) => (

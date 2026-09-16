@@ -15,6 +15,40 @@ import "../styles/fonts.css";
 import "../styles/tokens.css";
 
 const { title, description, themeColor } = siteData.meta;
+const url = siteData.url;
+const imagemSocial = `${url}/og.jpg`;
+
+/**
+ * Só entra aqui o que está visível na página: nada de nota, avaliação ou
+ * endereço que o site não mostra.
+ */
+const dadosEstruturados = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${url}/#organizacao`,
+      name: "FTWO Digital",
+      url,
+      description,
+      telephone: `+55${siteData.contato.whatsapp.slice(2)}`,
+      areaServed: "BR",
+      employee: siteData.time.pessoas.map((pessoa) => ({
+        "@type": "Person",
+        name: pessoa.nome,
+        jobTitle: pessoa.cargo,
+      })),
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${url}/#site`,
+      url,
+      name: title,
+      inLanguage: "pt-BR",
+      publisher: { "@id": `${url}/#organizacao` },
+    },
+  ],
+};
 ---
 
 <!doctype html>
@@ -25,6 +59,27 @@ const { title, description, themeColor } = siteData.meta;
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="theme-color" content={themeColor} />
+    <link rel="canonical" href={`${url}/`} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="FTWO Digital" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={`${url}/`} />
+    <meta property="og:image" content={imagemSocial} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="FTWO Digital" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imagemSocial} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(dadosEstruturados)} />
 
     <link
       rel="preload"

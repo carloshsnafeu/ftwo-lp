@@ -1,0 +1,122 @@
+---
+import logoSvg from "../../public/ftwo-logo.svg?raw";
+import { siteData } from "../data/sitedata";
+
+import "../styles/fonts.css";
+import "../styles/tokens.css";
+
+const { logoAlt } = siteData.hero;
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Página não encontrada: FTWO Digital</title>
+    <meta name="description" content="A página que você procurou não existe. Volte para o início do site da FTWO Digital." />
+    <meta name="theme-color" content={siteData.meta.themeColor} />
+    <meta name="robots" content="noindex" />
+    <link rel="canonical" href={`${siteData.url}/`} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+
+  <body>
+    <main class="tela">
+      <span class="marca" role="img" aria-label={logoAlt} set:html={logoSvg} />
+
+      <h1 class="titulo">Essa página não existe.</h1>
+      <p class="apoio">O endereço pode ter mudado de lugar. Volte para o início e siga daí.</p>
+
+      <a class="voltar" href="/">Ir para o início</a>
+    </main>
+  </body>
+</html>
+
+<style is:global>
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    background: var(--preto);
+    color: var(--texto);
+  }
+
+  body {
+    font-family: var(--fonte);
+    letter-spacing: 0.014em;
+    -webkit-font-smoothing: antialiased;
+  }
+</style>
+
+<style>
+  .tela {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+
+    min-height: 100vh;
+    min-height: 100svh;
+    padding: var(--gutter);
+  }
+
+  .marca {
+    display: block;
+    width: 120px;
+    margin-bottom: clamp(30px, 5vw, 52px);
+    line-height: 0;
+  }
+
+  .marca :global(svg) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .marca :global(path) {
+    fill: var(--branco);
+  }
+
+  .titulo {
+    margin: 0;
+    font: var(--display);
+    letter-spacing: var(--display-track);
+    color: var(--branco);
+  }
+
+  .apoio {
+    margin: 18px 0 0;
+    max-width: 40ch;
+    font: var(--corpo);
+    color: var(--texto-suave);
+  }
+
+  .voltar {
+    margin-top: clamp(28px, 4vw, 40px);
+    padding: 15px 26px;
+    border-radius: 999px;
+    background: var(--brasa);
+
+    font: 700 15px / 1 var(--fonte);
+    color: #1a0500;
+    text-decoration: none;
+
+    transition: transform 0.1s ease, filter 0.22s ease;
+  }
+
+  .voltar:hover {
+    filter: brightness(1.06);
+  }
+
+  .voltar:active {
+    transform: scale(0.98);
+  }
+</style>

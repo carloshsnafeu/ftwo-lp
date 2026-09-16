@@ -4,8 +4,11 @@
  */
 
 export const siteData = {
+  /** Endereço final do site. Usado no canonical, no Open Graph e no sitemap. */
+  url: "https://ftwo.com.br",
+
   meta: {
-    title: "FTWO Digital — Reagir é futuro",
+    title: "FTWO Digital: marca, presença digital e tecnologia",
     description:
       "Marca, presença digital e tecnologia em um só parceiro. A FTWO existe para transformar esforço em crescimento sólido.",
     themeColor: "#000000",
@@ -17,11 +20,11 @@ export const siteData = {
     welcome: ["Bem-vindo", "ao futuro"],
     /** Peças do portfólio. A ordem da lista é a ordem em que elas entram. */
     pecas: [
-      { id: "banner", src: "/pecas/muzie-banner.webp", alt: "Campanha Muzie Essence" },
-      { id: "cracha", src: "/pecas/cracha.webp", alt: "Crachá Comercial Nordestino" },
-      { id: "tubo", src: "/pecas/muzie-tubo.webp", alt: "Sérum Muzie Essence" },
-      { id: "camisa", src: "/pecas/camisa.webp", alt: "Uniforme Comercial Nordestino" },
-      { id: "sobreira", src: "/pecas/sobreira.webp", alt: "Identidade Sobreira Advogados" },
+      { id: "banner", src: "/pecas/muzie-banner.webp", w: 852, h: 479, alt: "Campanha Muzie Essence" },
+      { id: "cracha", src: "/pecas/cracha.webp", w: 210, h: 1003, alt: "Crachá Comercial Nordestino" },
+      { id: "tubo", src: "/pecas/muzie-tubo.webp", w: 374, h: 363, alt: "Sérum Muzie Essence" },
+      { id: "camisa", src: "/pecas/camisa.webp", w: 565, h: 473, alt: "Uniforme Comercial Nordestino" },
+      { id: "sobreira", src: "/pecas/sobreira.webp", w: 375, h: 297, alt: "Identidade Sobreira Advogados" },
     ],
   },
 
@@ -47,7 +50,7 @@ export const siteData = {
     etiqueta: "O que fazemos",
     titulo: "Conheça nossos serviços",
     apoio:
-      "Marca, presença e tecnologia sob o mesmo teto — para a estrutura não depender de quatro fornecedores que não conversam entre si.",
+      "Marca, presença e tecnologia sob o mesmo teto. A estrutura não depende de quatro fornecedores que não conversam entre si.",
     familias: [
       {
         id: "marca",
@@ -78,8 +81,8 @@ export const siteData = {
           {
             id: "social",
             nome: "Redes Sociais & Growth",
-            resumo: "Planejamento, produção e mídia paga com relatório de resultados — não só postagem.",
-            imagem: { src: "/mockups/social-celular.webp", alt: "Perfil Muzie Essence no Instagram" },
+            resumo: "Planejamento, produção e mídia paga, com relatório de resultados. Não só postagem.",
+            imagem: { src: "/mockups/social-celular.webp", w: 761, h: 1345, alt: "Perfil Muzie Essence no Instagram" },
             lista: [
               "Planejamento estratégico",
               "Cronograma mensal",
@@ -118,7 +121,7 @@ export const siteData = {
             id: "seo",
             nome: "SEO",
             resumo: "Estrutura técnica e conteúdo para o site aparecer quando o cliente procura.",
-            imagem: { src: "/mockups/seo-laptop.webp", alt: "Site institucional desenvolvido pela FTWO" },
+            imagem: { src: "/mockups/seo-laptop.webp", w: 1201, h: 1145, alt: "Site institucional desenvolvido pela FTWO" },
             lista: [
               "Pesquisa de palavras-chave",
               "Planejamento da estrutura do site",
@@ -172,7 +175,7 @@ export const siteData = {
           {
             id: "plataformas",
             nome: "Plataformas e produtos digitais",
-            resumo: "Para quem tem um produto digital a lançar — inclusive o MVP para validar antes.",
+            resumo: "Para quem tem um produto digital a lançar, inclusive o MVP para validar antes.",
             lista: [
               "Plataformas SaaS",
               "Sistemas por assinatura",
@@ -266,7 +269,7 @@ export const siteData = {
           {
             id: "suporte",
             nome: "Suporte, evolução e infraestrutura",
-            resumo: "O que mantém o que foi entregue de pé — e evoluindo.",
+            resumo: "O que mantém de pé, e evoluindo, tudo que foi entregue.",
             lista: [
               "Correções e suporte técnico",
               "Atualizações",
@@ -304,6 +307,8 @@ export const siteData = {
         nome: "Carlos Henrique F.",
         cargo: "Diretor de Tecnologia e Inovação",
         foto: "/mockups/time-carlos.webp",
+        fotoW: 720,
+        fotoH: 720,
         bio: [
           "Meu propósito é claro: estruturar empresa. Através de soluções digitais completas, unindo marketing e programação em um só lugar.",
           "Especialista em linguagens como Java, Kotlin, Python e JavaScript, e já atuei em projetos que vão desde integração com APIs até a criação de interfaces pensadas para a experiência do usuário final.",
@@ -313,6 +318,8 @@ export const siteData = {
         nome: "Barbara F.",
         cargo: "Diretora Criativa | Especialista em mercado",
         foto: "/mockups/time-barbara.webp",
+        fotoW: 720,
+        fotoH: 720,
         bio: [
           "Meu papel é conectar a visão de negócio dos nossos clientes às soluções certas, seja uma campanha, uma identidade visual ou um sistema sob medida.",
           "Sempre com o compromisso de ser a consistência que ajuda pequenas e médias empresas a atravessarem essa fase mais difícil e chegarem mais fortes do outro lado.",
@@ -329,7 +336,7 @@ export const siteData = {
     itens: [
       {
         nome: "Spark",
-        para: "Empresa em fase de estruturação, ainda validando marca e presença digital — 12 peças.",
+        para: "Empresa em fase de estruturação, ainda validando marca e presença digital. São 12 peças.",
         inclui: [
           "Planejamento estratégico",
           "Gestão de redes sociais (1-2 plataformas)",
@@ -341,7 +348,7 @@ export const siteData = {
       {
         nome: "Flame",
         destaque: true,
-        para: "Empresa em fase de estruturação, ainda validando marca e presença digital — 16 peças.",
+        para: "Empresa em fase de estruturação, ainda validando marca e presença digital. São 16 peças.",
         inclui: [
           "Planejamento estratégico",
           "Gestão de redes sociais (1-2 plataformas)",
@@ -352,7 +359,7 @@ export const siteData = {
       },
       {
         nome: "Fire",
-        para: "Empresa em fase de estruturação, ainda validando marca e presença digital — 16 peças + vídeo.",
+        para: "Empresa em fase de estruturação, ainda validando marca e presença digital. São 16 peças mais vídeo.",
         inclui: [
           "Planejamento estratégico",
           "Gestão de redes sociais (1-2 plataformas)",

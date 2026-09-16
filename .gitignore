@@ -8,8 +8,17 @@ dist/
 
 # Materiais de trabalho/pitch, não fazem parte do site
 Apresentação.pdf
+Apresentação comercial.pdf
 Design-da-Apple.pdf
 Neue Montreal.zip
+Agente-Landing-Claude-v1.0.0.zip
+
+# Toolkit de terceiros (67 MB): fica instalado em disco, fora do repo do cliente
+.claude/skills/landing-componentes/
+.claude/skills/landing-imagens/
+.claude/skills/landing-kits/
+.claude/skills/landing-padrao/
+.claude/skills/publicar-cloudflare/
 01 - Xadrez Girando/*.blend
 01 - Xadrez Girando/*.blend1
 01 - Xadrez Girando/*.bat

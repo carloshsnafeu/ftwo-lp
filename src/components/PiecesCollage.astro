@@ -7,7 +7,15 @@ const { pecas } = siteData.hero;
 <div class="pieces" id="hero-pieces" aria-label="Peças criadas pela ftwo">
   {
     pecas.map((peca) => (
-      <img class={`piece piece--${peca.id}`} src={peca.src} alt={peca.alt} loading="eager" decoding="async" />
+      <img
+        class={`piece piece--${peca.id}`}
+        src={peca.src}
+        alt={peca.alt}
+        width={peca.w}
+        height={peca.h}
+        loading="eager"
+        decoding="async"
+      />
     ))
   }
 </div>
