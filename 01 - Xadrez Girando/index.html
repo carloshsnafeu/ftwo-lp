@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FTWO — Xadrez 3D</title>
+    <style>
+      * { box-sizing: border-box; }
+      html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+      body {
+        background: radial-gradient(circle at 50% 45%, #242424 0%, #090909 48%, #000 100%);
+        color: #fff;
+        font-family: Inter, Arial, sans-serif;
+      }
+      canvas { display: block; width: 100%; height: 100%; }
+      .info {
+        position: fixed;
+        left: 24px;
+        bottom: 22px;
+        z-index: 2;
+        color: rgba(255,255,255,.7);
+        font-size: 13px;
+        letter-spacing: .04em;
+        pointer-events: none;
+      }
+      .status {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        z-index: 3;
+        background: #050505;
+        font-size: 14px;
+        transition: opacity .45s ease;
+      }
+      .status.hidden { opacity: 0; pointer-events: none; }
+      .status.error { color: #ff8d8d; padding: 32px; text-align: center; }
+    </style>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.180.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.180.0/examples/jsm/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="status" id="status">Carregando as peças…</div>
+    <div class="info">Arraste para olhar • Scroll para aproximar</div>
+
+    <script type="module">
+      import * as THREE from 'three';
+      import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+      import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+      const status = document.querySelector('#status');
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(34, innerWidth / innerHeight, 0.01, 100);
+      camera.position.set(0, 0.2, 11);
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+      renderer.setSize(innerWidth, innerHeight);
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.2;
+      document.body.appendChild(renderer.domElement);
+
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.06;
+      controls.enablePan = false;
+      controls.minDistance = 4;
+      controls.maxDistance = 18;
+
+      scene.add(new THREE.HemisphereLight(0xffffff, 0x151515, 2.4));
+
+      const keyLight = new THREE.DirectionalLight(0xffffff, 4.2);
+      keyLight.position.set(-5, -4, 8);
+      scene.add(keyLight);
+
+      const rimLight = new THREE.DirectionalLight(0x8aa4ff, 3.3);
+      rimLight.position.set(6, 3, 4);
+      scene.add(rimLight);
+
+      const clock = new THREE.Clock();
+      let mixer = null;
+      let model = null;
+      let rotateFallback = false;
+
+      function fitCamera(object) {
+        const box = new THREE.Box3().setFromObject(object);
+        const sphere = box.getBoundingSphere(new THREE.Sphere());
+        const distance = sphere.radius / Math.sin(THREE.MathUtils.degToRad(camera.fov / 2));
+
+        controls.target.copy(sphere.center);
+        camera.position.set(sphere.center.x, sphere.center.y, sphere.center.z + distance * 1.08);
+        camera.near = Math.max(distance / 100, 0.01);
+        camera.far = distance * 100;
+        camera.updateProjectionMatrix();
+        controls.update();
+      }
+
+      new GLTFLoader().load(
+        './ftwo_chess_animated.glb',
+        (gltf) => {
+          model = gltf.scene;
+          scene.add(model);
+          fitCamera(model);
+
+          if (gltf.animations.length) {
+            mixer = new THREE.AnimationMixer(model);
+            gltf.animations.forEach((clip) => mixer.clipAction(clip).play());
+          } else {
+            rotateFallback = true;
+          }
+
+          status.classList.add('hidden');
+        },
+        undefined,
+        (error) => {
+          console.error(error);
+          status.textContent = 'Não consegui abrir ftwo_chess_animated.glb. Confirme se ele está na mesma pasta do index.html.';
+          status.classList.add('error');
+        }
+      );
+
+      function animate() {
+        requestAnimationFrame(animate);
+        const delta = clock.getDelta();
+        if (mixer) mixer.update(delta);
+        if (model && rotateFallback) model.rotation.y += delta * 0.55;
+        controls.update();
+        renderer.render(scene, camera);
+      }
+      animate();
+
+      addEventListener('resize', () => {
+        camera.aspect = innerWidth / innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(innerWidth, innerHeight);
+      });
+    </script>
+  </body>
+</html>

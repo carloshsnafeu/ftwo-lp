@@ -1,0 +1,472 @@
+---
+import logoSvg from "../../public/ftwo-logo.svg?raw";
+---
+
+<section class="hero" aria-label="ftwo Digital">
+  <div class="background" aria-hidden="true">
+    <div class="blob blob-red-left"></div>
+    <div class="blob blob-orange-bottom"></div>
+    <div class="blob blob-red-right"></div>
+    <div class="blob blob-blue"></div>
+    <div class="blob blob-black"></div>
+  </div>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="content">
+    <h1 class="brand">
+      <span class="logo" id="ftwo-logo" role="img" aria-label="ftwo Digital" set:html={logoSvg} />
+    </h1>
+  </div>
+</section>
+
+<script>
+  const logo = document.querySelector<HTMLElement>("#ftwo-logo");
+  const svg = logo?.querySelector("svg");
+  const paths = svg ? Array.from(svg.querySelectorAll("path")) : [];
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const STAGGER = 55;
+  const DRAW_MS = 950;
+  const FILL_DELAY = 200;
+  const FILL_MS = 500;
+  const PAUSE_MS = 1400;
+
+  function primePaths() {
+    paths.forEach((path, index) => {
+      const length = path.getTotalLength();
+      path.style.transition = "none";
+      path.style.fill = "transparent";
+      path.style.stroke = "#fff";
+      path.style.strokeWidth = "1.4";
+      path.style.strokeOpacity = "1";
+      path.style.strokeDasharray = String(length);
+      path.style.strokeDashoffset = String(length);
+      // Force the reset to apply before re-enabling transitions.
+      path.getBoundingClientRect();
+      path.style.transition = [
+        `stroke-dashoffset ${DRAW_MS}ms cubic-bezier(.65,0,.35,1) ${index * STAGGER}ms`,
+        `fill ${FILL_MS}ms ease ${DRAW_MS + index * STAGGER + FILL_DELAY}ms`,
+        `stroke-opacity ${FILL_MS}ms ease ${DRAW_MS + index * STAGGER + FILL_DELAY}ms`,
+      ].join(", ");
+    });
+  }
+
+  function playDraw() {
+    primePaths();
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        paths.forEach((path) => {
+          path.style.strokeDashoffset = "0";
+          path.style.fill = "#fff";
+          path.style.strokeOpacity = "0";
+        });
+      });
+    });
+  }
+
+  if (logo && svg && paths.length && !reduceMotion) {
+    const lastIndex = paths.length - 1;
+    const cycleDuration = DRAW_MS + lastIndex * STAGGER + FILL_DELAY + FILL_MS + PAUSE_MS;
+
+    playDraw();
+    setInterval(playDraw, cycleDuration);
+  }
+</script>
+
+<style>
+  .hero {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    height: 100svh;
+
+    overflow: hidden;
+    background: #000;
+    isolation: isolate;
+  }
+
+  /* ==============================
+     FUNDO / BLOBS
+  ============================== */
+
+  .background {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+    background:
+      radial-gradient(
+        ellipse at 45% 25%,
+        #161616 0%,
+        #111 35%,
+        #080808 75%
+      );
+  }
+
+  .blob {
+    position: absolute;
+    will-change: transform;
+    pointer-events: none;
+  }
+
+  /* VERMELHO / LARANJA ESQUERDA */
+
+  .blob-red-left {
+    width: 75vw;
+    height: 68vw;
+
+    left: -28vw;
+    top: 25vh;
+
+    border-radius: 44% 56% 63% 37% / 54% 43% 57% 46%;
+
+    background:
+      radial-gradient(
+        circle at 62% 45%,
+        #ffac43 0%,
+        #ff6b32 20%,
+        #fb3028 42%,
+        #b60613 64%,
+        transparent 76%
+      );
+
+    filter: blur(17px);
+
+    animation: moveLeft 12s ease-in-out -3.5s infinite alternate;
+  }
+
+  /* LARANJA INFERIOR */
+
+  .blob-orange-bottom {
+    width: 120vw;
+    height: 48vw;
+
+    left: -10vw;
+    bottom: -18vw;
+
+    border-radius: 50%;
+
+    background:
+      radial-gradient(
+        ellipse,
+        #ffc260 0%,
+        #ff9144 28%,
+        #f64a2c 48%,
+        #bc111b 65%,
+        transparent 76%
+      );
+
+    filter: blur(22px);
+
+    animation: moveBottom 16s ease-in-out -6.5s infinite alternate;
+  }
+
+  /* VERMELHO DIREITA */
+
+  .blob-red-right {
+    width: 63vw;
+    height: 55vw;
+
+    right: -29vw;
+    top: 3vh;
+
+    border-radius: 53% 47% 40% 60% / 47% 53% 47% 53%;
+
+    background:
+      radial-gradient(
+        ellipse at 35% 48%,
+        #ff9744 0%,
+        #ff5130 24%,
+        #ed2027 43%,
+        #9c0712 65%,
+        transparent 78%
+      );
+
+    filter: blur(19px);
+
+    animation: moveRight 14s ease-in-out -5.5s infinite alternate;
+  }
+
+  /* AZUL / VERDE INFERIOR */
+
+  .blob-blue {
+    width: 67vw;
+    height: 35vw;
+
+    left: 12vw;
+    bottom: -9vw;
+
+    border-radius: 50%;
+
+    background:
+      radial-gradient(
+        ellipse,
+        #5e9297 0%,
+        #507f86 30%,
+        #265f69 52%,
+        transparent 75%
+      );
+
+    filter: blur(25px);
+
+    animation: moveBlue 19s ease-in-out -9.5s infinite alternate;
+  }
+
+  /* MANCHA PRETA CENTRAL */
+
+  .blob-black {
+    width: 82vw;
+    height: 45vw;
+
+    left: 25vw;
+    top: 19vh;
+
+    border-radius:
+      46% 54% 43% 57%
+      /
+      48% 39% 61% 52%;
+
+    background:
+      radial-gradient(
+        ellipse at center,
+        #111 0%,
+        #101010 50%,
+        #171717 68%,
+        transparent 73%
+      );
+
+    filter: blur(10px);
+
+    animation: moveBlack 21s ease-in-out -2.5s infinite alternate;
+  }
+
+  /* ==============================
+     TEXTURA / GRÃO
+  ============================== */
+
+  .noise {
+    position: absolute;
+    inset: 0;
+
+    z-index: 1;
+
+    pointer-events: none;
+
+    opacity: 0.24;
+
+    mix-blend-mode: soft-light;
+
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
+
+    /* Static tiled grain: no per-frame noise rendering or full-screen repaint. */
+    background-size: 180px 180px;
+    background-repeat: repeat;
+  }
+
+  /* ==============================
+     CONTEÚDO
+  ============================== */
+
+  .content {
+    position: relative;
+
+    z-index: 2;
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .logo {
+    display: block;
+
+    width: clamp(210px, 32vw, 380px);
+    max-width: 80vw;
+  }
+
+  .logo :global(svg) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .logo :global(path) {
+    fill: #fff;
+  }
+
+  .brand {
+    margin: 0;
+    padding: 0;
+    line-height: 0;
+  }
+
+  /* Non-uniform scaling deforms the shapes without animating blur or layout. */
+  @keyframes moveLeft {
+    0% {
+      transform:
+        translate3d(0, 0, 0)
+        rotate(-4deg)
+        scale(1);
+    }
+
+    50% {
+      transform:
+        translate3d(6vw, -5vh, 0)
+        rotate(4deg)
+        scale(1.12, 0.91);
+    }
+
+    100% {
+      transform:
+        translate3d(-3vw, 4vh, 0)
+        rotate(-1deg)
+        scale(0.96);
+    }
+  }
+
+  @keyframes moveRight {
+    0% {
+      transform:
+        translate3d(0, 0, 0)
+        rotate(4deg)
+        scale(1);
+    }
+
+    50% {
+      transform:
+        translate3d(-9vw, 5vh, 0)
+        rotate(-3deg)
+        scale(0.94, 1.16);
+    }
+
+    100% {
+      transform:
+        translate3d(2vw, -4vh, 0)
+        rotate(3deg)
+        scale(0.98);
+    }
+  }
+
+  @keyframes moveBottom {
+    0% {
+      transform:
+        translate3d(0, 0, 0)
+        scale(1);
+    }
+
+    50% {
+      transform:
+        translate3d(4vw, -5vh, 0)
+        scale(1.15, 0.89);
+    }
+
+    100% {
+      transform:
+        translate3d(-5vw, 1vh, 0)
+        scale(0.96, 1.09);
+    }
+  }
+
+  @keyframes moveBlue {
+    0% {
+      transform:
+        translate3d(0, 0, 0)
+        scale(1);
+    }
+
+    50% {
+      transform:
+        translate3d(-8vw, -4vh, 0)
+        scale(1.15, 0.89);
+    }
+
+    100% {
+      transform:
+        translate3d(5vw, 2vh, 0)
+        scale(0.98);
+    }
+  }
+
+  @keyframes moveBlack {
+    0% {
+      transform:
+        translate3d(0, 0, 0)
+        rotate(0deg)
+        scale(1);
+    }
+
+    50% {
+      transform:
+        translate3d(-6vw, 2vh, 0)
+        rotate(-2deg)
+        scale(0.96, 1.09);
+    }
+
+    100% {
+      transform:
+        translate3d(4vw, -3vh, 0)
+        rotate(2deg)
+        scale(0.96);
+    }
+  }
+
+  /* Viewport-relative height keeps color visible on tall mobile screens. */
+  @media (max-width: 768px) {
+    .blob-red-left {
+      width: 140vw;
+      height: 80%;
+      left: -75vw;
+      top: 18%;
+    }
+
+    .blob-red-right {
+      width: 130vw;
+      height: 70%;
+      right: -72vw;
+      top: -12%;
+    }
+
+    .blob-orange-bottom {
+      width: 180vw;
+      height: 55%;
+      left: -35vw;
+      bottom: -22%;
+    }
+
+    .blob-blue {
+      width: 145vw;
+      height: 45%;
+      left: -12vw;
+      bottom: -12%;
+    }
+
+    .blob-black {
+      width: 155vw;
+      height: 60%;
+      left: 0;
+      top: 15%;
+    }
+
+    .blob {
+      filter: blur(16px);
+    }
+
+    .logo {
+      width: min(290px, 72vw);
+    }
+  }
+
+  /* acessibilidade */
+
+  @media (prefers-reduced-motion: reduce) {
+    .blob,
+    .noise {
+      animation: none;
+      will-change: auto;
+    }
+  }
+</style>
