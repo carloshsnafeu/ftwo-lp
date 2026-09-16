@@ -106,7 +106,13 @@ const { logoAlt, welcome } = siteData.hero;
     // na tela, então pode ser interrompida ou redirecionada sem salto.
     intro.style.transform = `translateX(${first - last}px)`;
 
-    animate(intro, { x: 0 }, SETTLE_SPRING);
+    // A marca encolhe e o bloco sobe para abrir espaço à headline embaixo.
+    const settledScale =
+      parseFloat(getComputedStyle(intro).getPropertyValue("--logo-settled-scale")) || 0.66;
+    const lift = -Math.round(window.innerHeight * 0.07);
+
+    if (logo) animate(logo, { scale: settledScale }, SETTLE_SPRING);
+    animate(intro, { x: 0, y: lift }, SETTLE_SPRING);
     animate(welcome, { opacity: [0, 1], y: [14, 0] }, WELCOME_SPRING);
 
     // As peças entram uma a uma, na ordem em que estão no sitedata.
@@ -347,13 +353,18 @@ const { logoAlt, welcome } = siteData.hero;
 
   .intro {
     position: relative;
+
+    /* Fator único: a headline se posiciona a partir da logo já reduzida. */
+    --logo-settled-scale: 0.66;
   }
 
   /* Absolute so the hidden text doesn't offset the logo while it's centered,
      e para que o texto possa cavalgar sobre a marca. */
   .welcome {
     position: absolute;
-    top: 46%;
+    /* Logo abaixo da marca já reduzida — o transform não altera o layout,
+       então a altura vem do fator de escala. */
+    top: calc(100% * var(--logo-settled-scale) + clamp(12px, 1.5vw, 24px));
     left: 0;
 
     z-index: 1;
@@ -390,6 +401,10 @@ const { logoAlt, welcome } = siteData.hero;
 
     width: clamp(210px, 32vw, 380px);
     max-width: 80vw;
+
+    /* Ancorada na quina: reduzir não desloca a borda esquerda, então a
+       medição do FLIP continua válida. */
+    transform-origin: left top;
   }
 
   .logo :global(svg) {
@@ -564,7 +579,6 @@ const { logoAlt, welcome } = siteData.hero;
     }
 
     .welcome {
-      top: 52%;
       font-size: clamp(34px, 12vw, 54px);
     }
   }
