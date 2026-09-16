@@ -35,19 +35,34 @@ const { logoAlt, welcome } = siteData.hero;
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  const STAGGER = 55;
-  const DRAW_MS = 950;
-  const FILL_DELAY = 200;
-  const FILL_MS = 500;
+  // Ritmo da intro. Aumentar estes valores deixa a construção mais lenta.
+  const STAGGER = 110;
+  const DRAW_MS = 1800;
+  const FILL_DELAY = 350;
+  const FILL_MS = 900;
+
+  // visualDuration é o tempo de movimento visível — equivale ao "response" da Apple.
+  const SETTLE_SPRING = { type: "spring", bounce: 0, visualDuration: 1.1 } as const;
+  const WELCOME_SPRING = { type: "spring", bounce: 0, visualDuration: 0.9, delay: 0.5 } as const;
+
+  // O quanto a marca recua ao virar camada de fundo da headline.
+  const LOGO_BACKDROP_OPACITY = 0.3;
 
   function drawLogo() {
     paths.forEach((path, index) => {
       const length = path.getTotalLength();
+
+      // Sem transição enquanto o estado inicial é aplicado, senão o navegador
+      // pode resolver tudo de uma vez e a logo aparece pronta, sem se desenhar.
+      path.style.transition = "none";
       path.style.fill = "transparent";
       path.style.stroke = "#fff";
       path.style.strokeWidth = "1.4";
+      path.style.strokeOpacity = "1";
       path.style.strokeDasharray = String(length);
       path.style.strokeDashoffset = String(length);
+      path.getBoundingClientRect();
+
       path.style.transition = [
         `stroke-dashoffset ${DRAW_MS}ms cubic-bezier(.65,0,.35,1) ${index * STAGGER}ms`,
         `fill ${FILL_MS}ms ease ${DRAW_MS + index * STAGGER + FILL_DELAY}ms`,
@@ -78,23 +93,23 @@ const { logoAlt, welcome } = siteData.hero;
     content.classList.add("is-settled");
     const last = intro.getBoundingClientRect().left;
 
-    animate(
-      intro,
-      { x: [first - last, 0] },
-      { type: "spring", bounce: 0, duration: 0.4 }
-    );
+    // Aplica o deslocamento antes de animar: a mola parte do valor que está
+    // na tela, então pode ser interrompida ou redirecionada sem salto.
+    intro.style.transform = `translateX(${first - last}px)`;
 
-    animate(
-      welcome,
-      { opacity: [0, 1], y: [12, 0] },
-      { type: "spring", bounce: 0, duration: 0.4, delay: 0.14 }
-    );
+    animate(intro, { x: 0 }, SETTLE_SPRING);
+    animate(welcome, { opacity: [0, 1], y: [14, 0] }, WELCOME_SPRING);
+
+    // A marca recua para o segundo plano quando a headline entra por cima,
+    // senão as duas camadas brancas se anulam na sobreposição.
+    if (logo) animate(logo, { opacity: LOGO_BACKDROP_OPACITY }, WELCOME_SPRING);
   }
 
   if (content && intro && welcome && paths.length) {
     if (reduceMotion) {
       content.classList.add("is-settled");
       welcome.style.opacity = "1";
+      if (logo) logo.style.opacity = String(LOGO_BACKDROP_OPACITY);
     } else {
       const drawTotal = DRAW_MS + (paths.length - 1) * STAGGER + FILL_DELAY + FILL_MS;
       drawLogo();
@@ -321,22 +336,25 @@ const { logoAlt, welcome } = siteData.hero;
     position: relative;
   }
 
-  /* Absolute so the hidden text doesn't offset the logo while it's centered. */
+  /* Absolute so the hidden text doesn't offset the logo while it's centered,
+     e para que o texto possa cavalgar sobre a marca. */
   .welcome {
     position: absolute;
-    top: 100%;
+    top: 58%;
     left: 0;
 
-    margin: 0;
-    padding-top: clamp(14px, 1.6vw, 22px);
+    z-index: 1;
 
-    font-size: clamp(17px, 1.9vw, 24px);
-    font-weight: 300;
-    line-height: 1.25;
-    letter-spacing: -0.01em;
+    margin: 0;
+
+    font-size: clamp(34px, 6.6vw, 94px);
+    font-weight: 700;
+    /* Texto de display pede entrelinha curta e tracking negativo. */
+    line-height: 0.95;
+    letter-spacing: -0.035em;
     white-space: nowrap;
 
-    color: rgba(255, 255, 255, 0.82);
+    color: #fff;
 
     opacity: 0;
   }
@@ -517,6 +535,14 @@ const { logoAlt, welcome } = siteData.hero;
 
     .logo {
       width: min(290px, 72vw);
+    }
+
+    /* Em tela estreita o texto quebra em linhas e sobrepõe a marca por baixo. */
+    .welcome {
+      top: 62%;
+      font-size: clamp(30px, 11vw, 48px);
+      white-space: normal;
+      max-width: min(84vw, 8ch);
     }
   }
 
