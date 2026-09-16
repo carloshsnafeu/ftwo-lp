@@ -12,7 +12,8 @@ export const siteData = {
 
   hero: {
     logoAlt: "ftwo Digital",
-    welcome: "Bem-vindo ao futuro",
+    /** Cada item é uma linha da headline — a quebra é essa, não a da tela. */
+    welcome: ["Bem-vindo", "ao futuro"],
   },
 
   contato: {
