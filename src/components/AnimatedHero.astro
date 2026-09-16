@@ -1,8 +1,11 @@
 ---
 import logoSvg from "../../public/ftwo-logo.svg?raw";
+import { siteData } from "../data/sitedata";
+
+const { logoAlt, welcome } = siteData.hero;
 ---
 
-<section class="hero" aria-label="ftwo Digital">
+<section class="hero" aria-label={logoAlt}>
   <div class="background" aria-hidden="true">
     <div class="blob blob-red-left"></div>
     <div class="blob blob-orange-bottom"></div>
@@ -11,17 +14,24 @@ import logoSvg from "../../public/ftwo-logo.svg?raw";
     <div class="blob blob-black"></div>
   </div>
   <div class="noise" aria-hidden="true"></div>
-  <div class="content">
-    <h1 class="brand">
-      <span class="logo" id="ftwo-logo" role="img" aria-label="ftwo Digital" set:html={logoSvg} />
-    </h1>
+  <div class="content" id="hero-content">
+    <div class="intro" id="hero-intro">
+      <h1 class="brand">
+        <span class="logo" id="ftwo-logo" role="img" aria-label={logoAlt} set:html={logoSvg} />
+      </h1>
+      <p class="welcome" id="hero-welcome">{welcome}</p>
+    </div>
   </div>
 </section>
 
 <script>
+  import { animate } from "motion";
+
+  const content = document.querySelector<HTMLElement>("#hero-content");
+  const intro = document.querySelector<HTMLElement>("#hero-intro");
+  const welcome = document.querySelector<HTMLElement>("#hero-welcome");
   const logo = document.querySelector<HTMLElement>("#ftwo-logo");
-  const svg = logo?.querySelector("svg");
-  const paths = svg ? Array.from(svg.querySelectorAll("path")) : [];
+  const paths = logo ? Array.from(logo.querySelectorAll("path")) : [];
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -29,30 +39,22 @@ import logoSvg from "../../public/ftwo-logo.svg?raw";
   const DRAW_MS = 950;
   const FILL_DELAY = 200;
   const FILL_MS = 500;
-  const PAUSE_MS = 1400;
 
-  function primePaths() {
+  function drawLogo() {
     paths.forEach((path, index) => {
       const length = path.getTotalLength();
-      path.style.transition = "none";
       path.style.fill = "transparent";
       path.style.stroke = "#fff";
       path.style.strokeWidth = "1.4";
-      path.style.strokeOpacity = "1";
       path.style.strokeDasharray = String(length);
       path.style.strokeDashoffset = String(length);
-      // Force the reset to apply before re-enabling transitions.
-      path.getBoundingClientRect();
       path.style.transition = [
         `stroke-dashoffset ${DRAW_MS}ms cubic-bezier(.65,0,.35,1) ${index * STAGGER}ms`,
         `fill ${FILL_MS}ms ease ${DRAW_MS + index * STAGGER + FILL_DELAY}ms`,
         `stroke-opacity ${FILL_MS}ms ease ${DRAW_MS + index * STAGGER + FILL_DELAY}ms`,
       ].join(", ");
     });
-  }
 
-  function playDraw() {
-    primePaths();
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         paths.forEach((path) => {
@@ -64,12 +66,40 @@ import logoSvg from "../../public/ftwo-logo.svg?raw";
     });
   }
 
-  if (logo && svg && paths.length && !reduceMotion) {
-    const lastIndex = paths.length - 1;
-    const cycleDuration = DRAW_MS + lastIndex * STAGGER + FILL_DELAY + FILL_MS + PAUSE_MS;
+  /**
+   * FLIP: the left-aligned position is defined by CSS, so the layout stays
+   * correct on resize; only the transform is animated, from the measured
+   * center position back to zero.
+   */
+  function settleToLeft() {
+    if (!content || !intro || !welcome) return;
 
-    playDraw();
-    setInterval(playDraw, cycleDuration);
+    const first = intro.getBoundingClientRect().left;
+    content.classList.add("is-settled");
+    const last = intro.getBoundingClientRect().left;
+
+    animate(
+      intro,
+      { x: [first - last, 0] },
+      { type: "spring", bounce: 0, duration: 0.4 }
+    );
+
+    animate(
+      welcome,
+      { opacity: [0, 1], y: [12, 0] },
+      { type: "spring", bounce: 0, duration: 0.4, delay: 0.14 }
+    );
+  }
+
+  if (content && intro && welcome && paths.length) {
+    if (reduceMotion) {
+      content.classList.add("is-settled");
+      welcome.style.opacity = "1";
+    } else {
+      const drawTotal = DRAW_MS + (paths.length - 1) * STAGGER + FILL_DELAY + FILL_MS;
+      drawLogo();
+      setTimeout(settleToLeft, drawTotal);
+    }
   }
 </script>
 
@@ -279,6 +309,36 @@ import logoSvg from "../../public/ftwo-logo.svg?raw";
     display: flex;
     justify-content: center;
     align-items: center;
+
+    padding-inline: clamp(24px, 6vw, 80px);
+  }
+
+  .content.is-settled {
+    justify-content: flex-start;
+  }
+
+  .intro {
+    position: relative;
+  }
+
+  /* Absolute so the hidden text doesn't offset the logo while it's centered. */
+  .welcome {
+    position: absolute;
+    top: 100%;
+    left: 0;
+
+    margin: 0;
+    padding-top: clamp(14px, 1.6vw, 22px);
+
+    font-size: clamp(17px, 1.9vw, 24px);
+    font-weight: 300;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+
+    color: rgba(255, 255, 255, 0.82);
+
+    opacity: 0;
   }
 
   .logo {
