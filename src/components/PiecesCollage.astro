@@ -1,0 +1,91 @@
+---
+import { siteData } from "../data/sitedata";
+
+const { pecas } = siteData.hero;
+---
+
+<div class="pieces" id="hero-pieces" aria-label="Peças criadas pela ftwo">
+  {
+    pecas.map((peca) => (
+      <img class={`piece piece--${peca.id}`} src={peca.src} alt={peca.alt} loading="eager" decoding="async" />
+    ))
+  }
+</div>
+
+<style>
+  .pieces {
+    position: absolute;
+    z-index: 2;
+
+    top: 50%;
+    right: clamp(20px, 4vw, 64px);
+    transform: translateY(-50%);
+
+    width: min(46vw, 720px);
+    aspect-ratio: 1.12;
+
+    pointer-events: none;
+  }
+
+  .piece {
+    position: absolute;
+    display: block;
+    height: auto;
+
+    /* Sombra funda separa as peças do gradiente atrás. */
+    filter: drop-shadow(0 18px 38px rgba(0, 0, 0, 0.45));
+
+    /* Estado inicial: o script anima a entrada uma a uma. */
+    opacity: 0;
+  }
+
+  /* As peças se sobrepõem: a ordem no DOM define quem fica por cima. */
+
+  .piece--banner {
+    left: 15%;
+    top: 2%;
+    width: 70%;
+  }
+
+  .piece--cracha {
+    left: 2%;
+    top: 4%;
+    width: 12%;
+  }
+
+  .piece--tubo {
+    left: 69%;
+    top: 37%;
+    width: 29%;
+  }
+
+  .piece--camisa {
+    left: 26%;
+    top: 43%;
+    width: 40%;
+  }
+
+  .piece--sobreira {
+    left: 60%;
+    top: 63%;
+    width: 34%;
+  }
+
+  @media (max-width: 900px) {
+    .pieces {
+      top: auto;
+      bottom: 4%;
+      right: 50%;
+
+      width: min(86vw, 460px);
+      transform: translateX(50%);
+    }
+  }
+
+  /* Sem animação de entrada, as peças precisam já estar visíveis. */
+  @media (prefers-reduced-motion: reduce) {
+    .piece {
+      opacity: 1;
+    }
+  }
+</style>
