@@ -26,14 +26,6 @@ export const siteData = {
     logoAlt: "ftwo Digital",
     /** Cada item é uma linha da headline — a quebra é essa, não a da tela. */
     welcome: ["Bem-vindo", "ao futuro"],
-    /** Peças do portfólio. A ordem da lista é a ordem em que elas entram. */
-    pecas: [
-      { id: "banner", src: "/pecas/muzie-banner.webp", w: 852, h: 479, alt: "Campanha Muzie Essence" },
-      { id: "cracha", src: "/pecas/cracha.webp", w: 210, h: 1003, alt: "Crachá Comercial Nordestino" },
-      { id: "tubo", src: "/pecas/muzie-tubo.webp", w: 374, h: 363, alt: "Sérum Muzie Essence" },
-      { id: "camisa", src: "/pecas/camisa.webp", w: 565, h: 473, alt: "Uniforme Comercial Nordestino" },
-      { id: "sobreira", src: "/pecas/sobreira.webp", w: 375, h: 297, alt: "Identidade Sobreira Advogados" },
-    ],
   },
 
   problema: {
@@ -78,6 +70,14 @@ export const siteData = {
             id: "branding",
             nome: "Marca & Branding",
             resumo: "Da estratégia de mercado ao brandbook, com a marca aplicada em tudo que o cliente toca.",
+            /** Peças reais de portfólio. A ordem da lista é a ordem em que elas entram. */
+            colagem: [
+              { id: "banner", src: "/pecas/muzie-banner.webp", w: 852, h: 479, alt: "Campanha Muzie Essence" },
+              { id: "cracha", src: "/pecas/cracha.webp", w: 210, h: 1003, alt: "Crachá Comercial Nordestino" },
+              { id: "tubo", src: "/pecas/muzie-tubo.webp", w: 374, h: 363, alt: "Sérum Muzie Essence" },
+              { id: "camisa", src: "/pecas/camisa.webp", w: 565, h: 473, alt: "Uniforme Comercial Nordestino" },
+              { id: "sobreira", src: "/pecas/sobreira.webp", w: 375, h: 297, alt: "Identidade Sobreira Advogados" },
+            ],
             lista: [
               "Mercado e estratégia",
               "Benchmarking",
@@ -399,6 +399,8 @@ export const siteData = {
     apoio: "Preencha seus dados e fale agora com a gente. Sem compromisso, sem enrolação.",
     telefone: "27 999601.1084",
     whatsapp: "5527999601084",
+    /** Mensagem do botão flutuante de WhatsApp, presente em todo o site. */
+    mensagemFlutuante: "Olá! Vim pelo site da FTWO e quero conversar sobre um projeto.",
     site: "ftwo.com.br",
     botao: "Falar com a FTWO",
     disclaimer: "Ao enviar, você será direcionado ao WhatsApp da FTWO com seus dados preenchidos.",

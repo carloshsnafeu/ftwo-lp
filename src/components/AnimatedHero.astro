@@ -5,7 +5,7 @@ import { siteData } from "../data/sitedata";
 const { logoAlt, welcome } = siteData.hero;
 ---
 
-<section class="hero" aria-label={logoAlt}>
+<section class="hero" aria-label={logoAlt} data-revelar-grupo>
   <div class="background" aria-hidden="true">
     <div class="blob blob-red-left"></div>
     <div class="blob blob-orange-bottom"></div>
@@ -15,109 +15,25 @@ const { logoAlt, welcome } = siteData.hero;
   </div>
   <div class="noise" aria-hidden="true"></div>
 
-  <div class="content" id="hero-content">
-    <div class="intro" id="hero-intro">
-      <h1 class="brand">
-        <span class="logo" id="ftwo-logo" role="img" aria-label={logoAlt} set:html={logoSvg} />
-      </h1>
-      <p class="welcome" id="hero-welcome">
-        {welcome.map((line) => <span class="welcome-line">{line}</span>)}
-      </p>
+  <div class="content">
+    <span class="logo" role="img" aria-label={logoAlt} set:html={logoSvg} data-revelar />
+
+    <h1 class="boas-vindas" data-revelar>
+      {welcome.map((line) => <span class="boas-vindas-linha">{line}</span>)}
+    </h1>
+
+    <div class="acoes" data-revelar>
+      <a class="botao-primario" href="#contato">Vamos conversar?</a>
+      <a class="botao-secundario" href="#servicos">Conhecer as soluções</a>
     </div>
   </div>
+
+  <a class="seta-scroll" href="#problema" aria-label="Rolar para a próxima seção" data-revelar>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 4v16m0 0-6-6m6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </a>
 </section>
-
-<script>
-  import { animate } from "motion";
-
-  const content = document.querySelector<HTMLElement>("#hero-content");
-  const intro = document.querySelector<HTMLElement>("#hero-intro");
-  const welcome = document.querySelector<HTMLElement>("#hero-welcome");
-  const logo = document.querySelector<HTMLElement>("#ftwo-logo");
-  const paths = logo ? Array.from(logo.querySelectorAll("path")) : [];
-
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  // Ritmo da intro. Aumentar estes valores deixa a construção mais lenta.
-  const STAGGER = 110;
-  const DRAW_MS = 1800;
-  const FILL_DELAY = 350;
-  const FILL_MS = 900;
-
-  // visualDuration é o tempo de movimento visível — equivale ao "response" da Apple.
-  const SETTLE_SPRING = { type: "spring", bounce: 0, visualDuration: 1.1 } as const;
-  const WELCOME_SPRING = { type: "spring", bounce: 0, visualDuration: 0.9, delay: 0.5 } as const;
-
-  function drawLogo() {
-    paths.forEach((path, index) => {
-      const length = path.getTotalLength();
-
-      // Sem transição enquanto o estado inicial é aplicado, senão o navegador
-      // pode resolver tudo de uma vez e a logo aparece pronta, sem se desenhar.
-      path.style.transition = "none";
-      path.style.fill = "transparent";
-      path.style.stroke = "#fff";
-      path.style.strokeWidth = "1.4";
-      path.style.strokeOpacity = "1";
-      path.style.strokeDasharray = String(length);
-      path.style.strokeDashoffset = String(length);
-      path.getBoundingClientRect();
-
-      path.style.transition = [
-        `stroke-dashoffset ${DRAW_MS}ms cubic-bezier(.65,0,.35,1) ${index * STAGGER}ms`,
-        `fill ${FILL_MS}ms ease ${DRAW_MS + index * STAGGER + FILL_DELAY}ms`,
-        `stroke-opacity ${FILL_MS}ms ease ${DRAW_MS + index * STAGGER + FILL_DELAY}ms`,
-      ].join(", ");
-    });
-
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        paths.forEach((path) => {
-          path.style.strokeDashoffset = "0";
-          path.style.fill = "#fff";
-          path.style.strokeOpacity = "0";
-        });
-      });
-    });
-  }
-
-  /**
-   * FLIP: the left-aligned position is defined by CSS, so the layout stays
-   * correct on resize; only the transform is animated, from the measured
-   * center position back to zero.
-   */
-  function settleToLeft() {
-    if (!content || !intro || !welcome) return;
-
-    const first = intro.getBoundingClientRect().left;
-    content.classList.add("is-settled");
-    const last = intro.getBoundingClientRect().left;
-
-    // Aplica o deslocamento antes de animar: a mola parte do valor que está
-    // na tela, então pode ser interrompida ou redirecionada sem salto.
-    intro.style.transform = `translateX(${first - last}px)`;
-
-    // A marca encolhe e o bloco sobe para abrir espaço à headline embaixo.
-    const settledScale =
-      parseFloat(getComputedStyle(intro).getPropertyValue("--logo-settled-scale")) || 0.66;
-    const lift = -Math.round(window.innerHeight * 0.07);
-
-    if (logo) animate(logo, { scale: settledScale }, SETTLE_SPRING);
-    animate(intro, { x: 0, y: lift }, SETTLE_SPRING);
-    animate(welcome, { opacity: [0, 1], y: [14, 0] }, WELCOME_SPRING);
-  }
-
-  if (content && intro && welcome && paths.length) {
-    if (reduceMotion) {
-      content.classList.add("is-settled");
-      welcome.style.opacity = "1";
-    } else {
-      const drawTotal = DRAW_MS + (paths.length - 1) * STAGGER + FILL_DELAY + FILL_MS;
-      drawLogo();
-      setTimeout(settleToLeft, drawTotal);
-    }
-  }
-</script>
 
 <style>
   .hero {
@@ -323,70 +239,18 @@ const { logoAlt, welcome } = siteData.hero;
     height: 100%;
 
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
+    gap: clamp(18px, 2.4vw, 28px);
 
     padding-inline: clamp(24px, 6vw, 80px);
-  }
-
-  .content.is-settled {
-    justify-content: flex-start;
-  }
-
-  .intro {
-    position: relative;
-
-    /* Fator único: a headline se posiciona a partir da logo já reduzida. */
-    --logo-settled-scale: 0.66;
-  }
-
-  /* Absolute so the hidden text doesn't offset the logo while it's centered,
-     e para que o texto possa cavalgar sobre a marca. */
-  .welcome {
-    position: absolute;
-    /* Logo abaixo da marca já reduzida — o transform não altera o layout,
-       então a altura vem do fator de escala. */
-    top: calc(100% * var(--logo-settled-scale) + clamp(12px, 1.5vw, 24px));
-    left: 0;
-
-    z-index: 1;
-
-    margin: 0;
-
-    /* O bloco é posicionado dentro da logo; sem isso herdaria a largura dela
-       e quebraria as linhas em pedaços. */
-    width: max-content;
-
-    font-size: clamp(38px, 7.4vw, 108px);
-    font-weight: 700;
-    /* Texto de display pede entrelinha curta e tracking negativo. */
-    line-height: 0.92;
-    letter-spacing: -0.038em;
-
-    color: #fff;
-
-    /* Sombra funda dá a separação sobre a marca sem precisar apagá-la. */
-    text-shadow:
-      0 2px 10px rgba(0, 0, 0, 0.5),
-      0 6px 40px rgba(0, 0, 0, 0.6);
-
-    opacity: 0;
-  }
-
-  .welcome-line {
-    display: block;
-    white-space: nowrap;
+    text-align: center;
   }
 
   .logo {
     display: block;
-
-    width: clamp(210px, 32vw, 380px);
-    max-width: 80vw;
-
-    /* Ancorada na quina: reduzir não desloca a borda esquerda, então a
-       medição do FLIP continua válida. */
-    transform-origin: left top;
+    width: clamp(150px, 17vw, 230px);
   }
 
   .logo :global(svg) {
@@ -399,10 +263,91 @@ const { logoAlt, welcome } = siteData.hero;
     fill: #fff;
   }
 
-  .brand {
+  .boas-vindas {
     margin: 0;
-    padding: 0;
-    line-height: 0;
+
+    font: var(--display);
+    letter-spacing: var(--display-track);
+    color: #fff;
+  }
+
+  .boas-vindas-linha {
+    display: block;
+  }
+
+  .acoes {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: clamp(12px, 1.6vw, 18px);
+    margin-top: clamp(4px, 1vw, 10px);
+  }
+
+  .botao-primario,
+  .botao-secundario {
+    padding: 15px 28px;
+    border-radius: 999px;
+
+    font: 700 15px / 1 var(--fonte);
+    text-decoration: none;
+    white-space: nowrap;
+
+    transition: transform 0.1s ease, filter 0.22s ease, background 0.22s ease, border-color 0.22s ease;
+  }
+
+  .botao-primario {
+    background: var(--brasa);
+    color: #1a0500;
+    box-shadow: 0 14px 30px -12px rgba(237, 32, 39, 0.6);
+  }
+
+  .botao-primario:hover {
+    filter: brightness(1.06);
+  }
+
+  .botao-secundario {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.04);
+    color: #fff;
+    font-weight: 500;
+  }
+
+  .botao-secundario:hover {
+    border-color: #fff;
+    background: rgba(255, 255, 255, 0.09);
+  }
+
+  /* Feedback no toque, não na soltura. */
+  .botao-primario:active,
+  .botao-secundario:active {
+    transform: scale(0.97);
+  }
+
+  .seta-scroll {
+    position: absolute;
+    z-index: 3;
+    right: clamp(20px, 4vw, 56px);
+    bottom: clamp(20px, 4vh, 48px);
+
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    background: rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: #fff;
+
+    transition: transform 0.18s ease, border-color 0.22s ease, background 0.22s ease;
+  }
+
+  .seta-scroll:hover {
+    transform: translateY(3px);
+    border-color: #fff;
+    background: rgba(0, 0, 0, 0.4);
   }
 
   /* Non-uniform scaling deforms the shapes without animating blur or layout. */
@@ -557,11 +502,18 @@ const { logoAlt, welcome } = siteData.hero;
     }
 
     .logo {
-      width: min(290px, 72vw);
+      width: min(150px, 40vw);
     }
 
-    .welcome {
-      font-size: clamp(34px, 12vw, 54px);
+    .acoes {
+      flex-direction: column;
+      width: 100%;
+      max-width: 320px;
+    }
+
+    .seta-scroll {
+      width: 38px;
+      height: 38px;
     }
   }
 

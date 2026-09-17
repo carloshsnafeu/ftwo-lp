@@ -1,7 +1,8 @@
 ---
-import PiecesCollage from "../PiecesCollage.astro";
+import logoSvg from "../../../public/ftwo-logo.svg?raw";
 import { siteData } from "../../data/sitedata";
 
+const { logoAlt } = siteData.hero;
 const { etiqueta, texto, assinatura, assinaturaApoio } = siteData.manifesto;
 ---
 
@@ -9,9 +10,7 @@ const { etiqueta, texto, assinatura, assinaturaApoio } = siteData.manifesto;
   <div class="brilho" aria-hidden="true"></div>
 
   <div class="container grade">
-    <div class="texto" data-revelar-grupo>
-      <span class="aspas" aria-hidden="true">“</span>
-
+    <div class="texto" id="manifesto-texto" data-revelar-grupo>
       <p class="etiqueta" data-revelar>{etiqueta}</p>
 
       <h2 class="declaracao" id="manifesto-titulo" data-revelar>
@@ -27,13 +26,71 @@ const { etiqueta, texto, assinatura, assinaturaApoio } = siteData.manifesto;
       </div>
     </div>
 
-    <div class="colagem">
-      <div class="colagem-limite">
-        <PiecesCollage />
-      </div>
+    <div class="marca-coluna">
+      <span class="marca-desenho" id="manifesto-logo" role="img" aria-label={logoAlt} set:html={logoSvg} />
     </div>
   </div>
 </section>
+
+<script>
+  /**
+   * A logo se desenha aqui agora (antes ficava na intro). O gatilho é o
+   * mesmo elemento e limiar que o revelar.ts usa para o resto do bloco, para
+   * as duas animações nascerem juntas em vez de destoar uma da outra.
+   */
+  const gatilho = document.querySelector<HTMLElement>("#manifesto-texto");
+  const logo = document.querySelector<HTMLElement>("#manifesto-logo");
+  const paths = logo ? Array.from(logo.querySelectorAll("path")) : [];
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const STAGGER = 90;
+  const DRAW_MS = 1400;
+  const FILL_DELAY = 260;
+  const FILL_MS = 700;
+
+  function drawLogo() {
+    paths.forEach((path, index) => {
+      const length = path.getTotalLength();
+
+      path.style.transition = "none";
+      path.style.fill = "transparent";
+      path.style.stroke = "#fff";
+      path.style.strokeWidth = "1.4";
+      path.style.strokeOpacity = "1";
+      path.style.strokeDasharray = String(length);
+      path.style.strokeDashoffset = String(length);
+      path.getBoundingClientRect();
+
+      path.style.transition = [
+        `stroke-dashoffset ${DRAW_MS}ms cubic-bezier(.65,0,.35,1) ${index * STAGGER}ms`,
+        `fill ${FILL_MS}ms ease ${DRAW_MS + index * STAGGER + FILL_DELAY}ms`,
+        `stroke-opacity ${FILL_MS}ms ease ${DRAW_MS + index * STAGGER + FILL_DELAY}ms`,
+      ].join(", ");
+    });
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        paths.forEach((path) => {
+          path.style.strokeDashoffset = "0";
+          path.style.fill = "#fff";
+          path.style.strokeOpacity = "0";
+        });
+      });
+    });
+  }
+
+  if (gatilho && logo && paths.length && !reduceMotion) {
+    new IntersectionObserver(
+      ([entrada], observador) => {
+        if (!entrada.isIntersecting) return;
+        observador.disconnect();
+        drawLogo();
+      },
+      { threshold: 0.2, rootMargin: "0px 0px -8% 0px" }
+    ).observe(gatilho);
+  }
+</script>
 
 <style>
   /* Cabe numa tela só, como a intro: a hierarquia por peso/cor já carrega o
@@ -48,10 +105,6 @@ const { etiqueta, texto, assinatura, assinaturaApoio } = siteData.manifesto;
 
     background: var(--preto);
     overflow: hidden;
-  }
-
-  .manifesto .container {
-    width: 100%;
   }
 
   /* O gradiente da intro volta aqui, mas rebaixado: presença, não protagonismo. */
@@ -86,38 +139,31 @@ const { etiqueta, texto, assinatura, assinaturaApoio } = siteData.manifesto;
     position: relative;
   }
 
-  /* Trava a colagem num teto menor: com o texto mais compacto, ela não pode
-     virar o elemento mais alto da seção. */
-  .colagem-limite {
-    max-width: 380px;
-    margin-inline: auto;
+  /* A marca ocupa o espaço onde antes ficava a colagem de peças. */
+  .marca-coluna {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  /* Âncora gráfica: marca a seção como declaração, não como parágrafo comum. */
-  .aspas {
-    position: absolute;
-    z-index: -1;
-    left: clamp(-18px, -2vw, -8px);
-    top: clamp(-58px, -5.4vw, -36px);
+  .marca-desenho {
+    display: block;
+    width: clamp(240px, 30vw, 440px);
+  }
 
-    font-family: var(--fonte);
-    font-weight: 700;
-    font-size: clamp(90px, 11vw, 156px);
-    line-height: 1;
+  .marca-desenho :global(svg) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
 
-    background: var(--brasa);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    opacity: 0.16;
-
-    pointer-events: none;
-    user-select: none;
+  .marca-desenho :global(path) {
+    fill: #fff;
   }
 
   .declaracao {
     margin: clamp(12px, 1.6vw, 18px) 0 0;
-    max-width: 40ch;
+    max-width: 44ch;
 
     font-family: var(--fonte);
     font-size: clamp(19px, 2.3vw, 31px);
@@ -189,16 +235,15 @@ const { etiqueta, texto, assinatura, assinaturaApoio } = siteData.manifesto;
   @media (max-width: 900px) {
     .grade {
       grid-template-columns: 1fr;
-      gap: 44px;
+      gap: 40px;
     }
 
     .declaracao {
       max-width: 100%;
     }
 
-    .aspas {
-      top: -34px;
-      font-size: clamp(80px, 22vw, 110px);
+    .marca-desenho {
+      width: min(220px, 58vw);
     }
   }
 </style>

@@ -1,7 +1,17 @@
 ---
-import { siteData } from "../data/sitedata";
+interface Peca {
+  id: string;
+  src: string;
+  alt: string;
+  w: number;
+  h: number;
+}
 
-const { pecas } = siteData.hero;
+interface Props {
+  pecas: readonly Peca[];
+}
+
+const { pecas } = Astro.props;
 ---
 
 <div class="pieces" aria-label="Peças criadas pela ftwo" data-revelar-grupo>

@@ -1,4 +1,5 @@
 ---
+import PiecesCollage from "../PiecesCollage.astro";
 import { siteData } from "../../data/sitedata";
 
 const { etiqueta, titulo, apoio, familias } = siteData.servicos;
@@ -13,53 +14,90 @@ const { etiqueta, titulo, apoio, familias } = siteData.servicos;
     </header>
 
     {
-      familias.map((familia) => (
-        <div class="familia">
-          <h3 class="familia-nome" data-revelar data-revelar-grupo>
-            <span class="familia-marca" aria-hidden="true" />
-            {familia.nome}
-          </h3>
+      familias.map((familia) => {
+        const destacados = familia.itens.filter((item) => "colagem" in item);
+        const normais = familia.itens.filter((item) => !("colagem" in item));
 
-          <div class="cartoes" data-revelar-grupo>
-            {familia.itens.map((item) => (
-              <article class={`cartao${"imagem" in item ? " cartao--com-imagem" : ""}`} data-revelar>
-                {"imagem" in item && item.imagem && (
-                  <div class="cartao-imagem">
-                    <img
-                      src={item.imagem.src}
-                      alt={item.imagem.alt}
-                      width={item.imagem.w}
-                      height={item.imagem.h}
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  </div>
-                )}
+        return (
+          <div class="familia">
+            <h3 class="familia-nome" data-revelar data-revelar-grupo>
+              <span class="familia-marca" aria-hidden="true" />
+              {familia.nome}
+            </h3>
 
-                <div class="cartao-texto">
-                  <h4 class="cartao-nome">{item.nome}</h4>
-                  <p class="cartao-resumo">{item.resumo}</p>
-
-                  <details class="detalhe" name={`servico-${familia.id}`}>
-                    <summary>
-                      <span class="detalhe-rotulo">Ver tudo que entra</span>
-                      <span class="detalhe-contagem">{item.lista.length}</span>
-                    </summary>
-
-                    <div class="detalhe-corpo">
-                      <ul class="lista">
-                        {item.lista.map((linha) => (
-                          <li>{linha}</li>
-                        ))}
-                      </ul>
+            <div class="cartoes-wrap" data-revelar-grupo>
+              {destacados.map((item) => (
+                <article class="cartao cartao--marca" data-revelar>
+                  {"colagem" in item && item.colagem && (
+                    <div class="cartao-colagem">
+                      <PiecesCollage pecas={item.colagem} />
                     </div>
-                  </details>
-                </div>
-              </article>
-            ))}
+                  )}
+
+                  <div class="cartao-texto">
+                    <h4 class="cartao-nome">{item.nome}</h4>
+                    <p class="cartao-resumo">{item.resumo}</p>
+
+                    <details class="detalhe" name={`servico-${familia.id}`}>
+                      <summary>
+                        <span class="detalhe-rotulo">Ver tudo que entra</span>
+                        <span class="detalhe-contagem">{item.lista.length}</span>
+                      </summary>
+
+                      <div class="detalhe-corpo">
+                        <ul class="lista">
+                          {item.lista.map((linha) => (
+                            <li>{linha}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </details>
+                  </div>
+                </article>
+              ))}
+
+              <div class="cartoes">
+                {normais.map((item) => (
+                  <article class={`cartao${"imagem" in item ? " cartao--com-imagem" : ""}`} data-revelar>
+                    {"imagem" in item && item.imagem && (
+                      <div class="cartao-imagem">
+                        <img
+                          src={item.imagem.src}
+                          alt={item.imagem.alt}
+                          width={item.imagem.w}
+                          height={item.imagem.h}
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </div>
+                    )}
+
+                    <div class="cartao-texto">
+                      <h4 class="cartao-nome">{item.nome}</h4>
+                      <p class="cartao-resumo">{item.resumo}</p>
+
+                      <details class="detalhe" name={`servico-${familia.id}`}>
+                        <summary>
+                          <span class="detalhe-rotulo">Ver tudo que entra</span>
+                          <span class="detalhe-contagem">{item.lista.length}</span>
+                        </summary>
+
+                        <div class="detalhe-corpo">
+                          <ul class="lista">
+                            {item.lista.map((linha) => (
+                              <li>{linha}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      </details>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
           </div>
-        </div>
-      ))
+        );
+      })
     }
   </div>
 </section>
@@ -159,6 +197,30 @@ const { etiqueta, titulo, apoio, familias } = siteData.servicos;
     height: 100%;
     object-fit: cover;
     object-position: center top;
+  }
+
+  /* O card de Marca & Branding é o único com trabalho real de portfólio: fica
+     em destaque, largura cheia, antes da grade dos demais serviços. */
+  .cartao--marca {
+    flex-direction: row;
+    margin-bottom: clamp(14px, 1.6vw, 20px);
+    min-height: 420px;
+  }
+
+  .cartao-colagem {
+    flex: 0 0 45%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: clamp(28px, 3.4vw, 44px);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.014));
+  }
+
+  .cartao-colagem :global(.pieces) {
+    width: 100%;
+    max-width: 380px;
   }
 
   .cartao-texto {
@@ -313,6 +375,16 @@ const { etiqueta, titulo, apoio, familias } = siteData.servicos;
 
     .cartao-imagem img {
       object-position: center 20%;
+    }
+
+    .cartao--marca {
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .cartao-colagem {
+      flex: none;
+      padding: 28px;
     }
   }
 </style>
