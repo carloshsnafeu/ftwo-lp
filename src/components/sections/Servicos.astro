@@ -36,20 +36,7 @@ const { etiqueta, titulo, apoio, familias } = siteData.servicos;
 
           <div class="cartoes" data-revelar-grupo>
             {familia.itens.map((item) => (
-              <article class={`cartao${"imagem" in item ? " cartao--com-imagem" : ""}`} data-revelar>
-                {"imagem" in item && item.imagem && (
-                  <div class="cartao-imagem">
-                    <img
-                      src={item.imagem.src}
-                      alt={item.imagem.alt}
-                      width={item.imagem.w}
-                      height={item.imagem.h}
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  </div>
-                )}
-
+              <article class="cartao" data-revelar>
                 <div class="cartao-texto">
                   <h4 class="cartao-nome">{item.nome}</h4>
                   <p class="cartao-resumo">{item.resumo}</p>
@@ -162,33 +149,6 @@ const { etiqueta, titulo, apoio, familias } = siteData.servicos;
   .cartao:hover {
     border-color: var(--borda-forte);
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
-  }
-
-  /* Card com mockup ocupa duas colunas e tem altura própria: a peça precisa
-     de área para ser lida, senão sobra só uma tira dela. */
-  .cartao--com-imagem {
-    grid-column: span 2;
-    flex-direction: row;
-    min-height: 340px;
-  }
-
-  .cartao-imagem {
-    flex: 0 0 38%;
-    position: relative;
-    overflow: hidden;
-    background: #060606;
-  }
-
-  /* Absoluta de propósito: assim a altura do card vem do texto, e a peça não
-     estica a linha inteira da grade atrás dela. */
-  .cartao-imagem img {
-    position: absolute;
-    inset: 0;
-
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center top;
   }
 
   .cartao-texto {
@@ -340,20 +300,6 @@ const { etiqueta, titulo, apoio, familias } = siteData.servicos;
     .abertura-imagem {
       align-self: center;
       height: clamp(160px, 44vw, 220px);
-    }
-
-    .cartao--com-imagem {
-      grid-column: span 1;
-      flex-direction: column;
-    }
-
-    .cartao-imagem {
-      flex: none;
-      height: 230px;
-    }
-
-    .cartao-imagem img {
-      object-position: center 20%;
     }
   }
 </style>

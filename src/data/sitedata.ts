@@ -95,7 +95,6 @@ export const siteData = {
             id: "social",
             nome: "Redes Sociais & Growth",
             resumo: "Planejamento, produção e mídia paga, com relatório de resultados. Não só postagem.",
-            imagem: { src: "/mockups/social-celular.webp", w: 761, h: 1345, alt: "Perfil Muzie Essence no Instagram" },
             lista: [
               "Planejamento estratégico",
               "Cronograma mensal",
@@ -134,7 +133,6 @@ export const siteData = {
             id: "seo",
             nome: "SEO",
             resumo: "Estrutura técnica e conteúdo para o site aparecer quando o cliente procura.",
-            imagem: { src: "/mockups/seo-laptop.webp", w: 1201, h: 1145, alt: "Site institucional desenvolvido pela FTWO" },
             lista: [
               "Pesquisa de palavras-chave",
               "Planejamento da estrutura do site",
