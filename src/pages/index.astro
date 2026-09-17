@@ -19,34 +19,78 @@ const { title, description, themeColor } = siteData.meta;
 const url = siteData.url;
 const imagemSocial = `${url}/og.jpg`;
 
+const organizacaoId = `${url}/#organizacao`;
+const siteId = `${url}/#site`;
+const paginaId = `${url}/#pagina`;
+
 /**
- * Só entra aqui o que está visível na página: nada de nota, avaliação ou
- * endereço que o site não mostra.
+ * Só entra aqui o que está visível na página: nada de nota, avaliação,
+ * endereço ou pessoa que o site não mostra. Por isso "employee" só aparece
+ * quando siteData.time.ativo é true — a seção "Quem faz" está desligada
+ * hoje, e sem ela o schema não pode falar dos nomes de ninguém.
  */
 const dadosEstruturados = {
   "@context": "https://schema.org",
   "@graph": [
     {
       "@type": "Organization",
-      "@id": `${url}/#organizacao`,
+      "@id": organizacaoId,
       name: "FTWO Digital",
       url,
       description,
+      slogan: siteData.manifesto.assinatura,
       telephone: `+55${siteData.contato.whatsapp.slice(2)}`,
+      email: siteData.contato.email,
       areaServed: "BR",
-      employee: siteData.time.pessoas.map((pessoa) => ({
-        "@type": "Person",
-        name: pessoa.nome,
-        jobTitle: pessoa.cargo,
-      })),
+      knowsAbout: siteData.servicos.familias.flatMap((familia) =>
+        familia.itens.map((item) => item.nome)
+      ),
+      hasOfferCatalog: {
+        "@type": "OfferCatalog",
+        name: siteData.servicos.titulo,
+        itemListElement: siteData.servicos.familias.map((familia) => ({
+          "@type": "OfferCatalog",
+          name: familia.nome,
+          itemListElement: familia.itens.map((item) => ({
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Service",
+              name: item.nome,
+              description: item.resumo,
+            },
+          })),
+        })),
+      },
+      ...(siteData.time.ativo && {
+        employee: siteData.time.pessoas.map((pessoa) => ({
+          "@type": "Person",
+          name: pessoa.nome,
+          jobTitle: pessoa.cargo,
+        })),
+      }),
     },
     {
       "@type": "WebSite",
-      "@id": `${url}/#site`,
+      "@id": siteId,
       url,
       name: title,
       inLanguage: "pt-BR",
-      publisher: { "@id": `${url}/#organizacao` },
+      publisher: { "@id": organizacaoId },
+    },
+    {
+      "@type": "WebPage",
+      "@id": paginaId,
+      url: `${url}/`,
+      name: title,
+      description,
+      inLanguage: "pt-BR",
+      isPartOf: { "@id": siteId },
+      about: { "@id": organizacaoId },
+      primaryImageOfPage: imagemSocial,
+      speakable: {
+        "@type": "SpeakableSpecification",
+        cssSelector: ["h1", "#problema-titulo", "#manifesto-titulo"],
+      },
     },
   ],
 };
