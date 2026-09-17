@@ -397,8 +397,8 @@ export const siteData = {
     etiqueta: "Vamos conversar?",
     titulo: ["Reagir é futuro.", "Vamos construí-lo juntos."],
     apoio: "Preencha seus dados e fale agora com a gente. Sem compromisso, sem enrolação.",
-    telefone: "27 999601.1084",
-    whatsapp: "5527999601084",
+    telefone: "27 99601-1084",
+    whatsapp: "5527996011084",
     /** Mensagem do botão flutuante de WhatsApp, presente em todo o site. */
     mensagemFlutuante: "Olá! Vim pelo site da FTWO e quero conversar sobre um projeto.",
     site: "ftwo.com.br",
