@@ -1,26 +1,30 @@
 ---
-import ChessScene from "../ChessScene.astro";
 import { siteData } from "../../data/sitedata";
 
 const { etiqueta, dado, destaque, apoio } = siteData.problema;
 ---
 
 <section class="problema secao grao" id="problema" aria-labelledby="problema-titulo">
-  <div class="container grade" data-revelar-grupo>
-    <div class="texto">
-      <p class="etiqueta" data-revelar>{etiqueta}</p>
+  <img
+    class="aperto"
+    src="/mockups/aperto-de-mao.webp"
+    alt=""
+    width="1400"
+    height="736"
+    loading="lazy"
+    decoding="async"
+    aria-hidden="true"
+  />
 
-      <h2 class="dado" id="problema-titulo" data-revelar>
-        {dado.map((linha) => <span class="linha">{linha}</span>)}
-      </h2>
+  <div class="container texto" data-revelar-grupo>
+    <p class="etiqueta" data-revelar>{etiqueta}</p>
 
-      <p class="destaque" data-revelar>{destaque}</p>
-      <p class="texto-apoio apoio" data-revelar>{apoio}</p>
-    </div>
+    <h2 class="dado" id="problema-titulo" data-revelar>
+      {dado.map((linha) => <span class="linha">{linha}</span>)}
+    </h2>
 
-    <div class="cena" data-revelar>
-      <ChessScene />
-    </div>
+    <p class="destaque" data-revelar>{destaque}</p>
+    <p class="texto-apoio apoio" data-revelar>{apoio}</p>
   </div>
 </section>
 
@@ -30,18 +34,38 @@ const { etiqueta, dado, destaque, apoio } = siteData.problema;
     overflow: hidden;
   }
 
-  .grade {
+  /* Fundo da seção: sangra pela direita e fica atrás do texto. */
+  .aperto {
+    position: absolute;
+    z-index: 0;
+
+    right: -10%;
+    top: 50%;
+    transform: translateY(-50%);
+
+    width: min(62%, 900px);
+    height: auto;
+
+    opacity: 0.22;
+    pointer-events: none;
+    user-select: none;
+
+    /* Some no canto esquerdo, onde o texto passa por cima. */
+    mask-image: linear-gradient(to right, transparent, #000 34%);
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 34%);
+  }
+
+  /* Mantém a largura do container para alinhar com as outras seções; quem
+     limita a linha é cada bloco de texto. */
+  .texto {
     position: relative;
     z-index: 1;
-
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
-    align-items: center;
-    gap: clamp(32px, 6vw, 88px);
   }
 
   .dado {
     margin: 18px 0 0;
+    max-width: 13ch;
+
     font: var(--display);
     letter-spacing: var(--display-track);
     color: var(--branco);
@@ -53,6 +77,7 @@ const { etiqueta, dado, destaque, apoio } = siteData.problema;
 
   .destaque {
     margin: clamp(20px, 2.6vw, 34px) 0 0;
+    max-width: 30ch;
     font: var(--subtitulo);
     letter-spacing: var(--subtitulo-track);
     color: var(--vermelho);
@@ -64,21 +89,21 @@ const { etiqueta, dado, destaque, apoio } = siteData.problema;
     max-width: 46ch;
   }
 
-  .cena {
-    aspect-ratio: 1;
-    min-height: 320px;
-  }
-
   @media (max-width: 900px) {
-    .grade {
-      grid-template-columns: 1fr;
-      gap: 40px;
+    /* Em tela estreita a mão passaria por trás do texto e sujaria a leitura. */
+    .aperto {
+      right: -22%;
+      top: auto;
+      bottom: 4%;
+      transform: none;
+
+      width: 120%;
+      opacity: 0.18;
     }
 
-    .cena {
-      order: -1;
-      min-height: 260px;
-      aspect-ratio: 1.1;
+    .dado,
+    .destaque {
+      max-width: 100%;
     }
   }
 </style>
