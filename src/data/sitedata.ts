@@ -7,6 +7,14 @@ export const siteData = {
   /** Endereço final do site. Usado no canonical, no Open Graph e no sitemap. */
   url: "https://ftwo.com.br",
 
+  /**
+   * Libera o site para o Google. Enquanto estiver false, a página sai com
+   * noindex e o robots.txt bloqueia tudo: o link funciona para mostrar ao
+   * cliente, mas nada é indexado. Virar para true é o único passo para
+   * publicar de vez.
+   */
+  indexavel: false,
+
   meta: {
     title: "FTWO Digital: marca, presença digital e tecnologia",
     description:

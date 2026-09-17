@@ -26,3 +26,6 @@ Agente-Landing-Claude-v1.0.0.zip
 # Originais das peças — o site usa as versões otimizadas em public/pecas/
 01 - Partes das Peças/
 00 - Partes das Peças/
+
+# Pacotes de deploy
+dist_*.zip

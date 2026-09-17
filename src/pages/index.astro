@@ -60,6 +60,7 @@ const dadosEstruturados = {
     <meta name="description" content={description} />
     <meta name="theme-color" content={themeColor} />
     <link rel="canonical" href={`${url}/`} />
+    {!siteData.indexavel && <meta name="robots" content="noindex, nofollow" />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
