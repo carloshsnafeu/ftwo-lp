@@ -1,4 +1,5 @@
 ---
+import PiecesCollage from "../PiecesCollage.astro";
 import { siteData } from "../../data/sitedata";
 
 const { etiqueta, frases, assinatura } = siteData.manifesto;
@@ -7,14 +8,20 @@ const { etiqueta, frases, assinatura } = siteData.manifesto;
 <section class="manifesto secao grao" id="manifesto" aria-labelledby="manifesto-titulo">
   <div class="brilho" aria-hidden="true"></div>
 
-  <div class="container" data-revelar-grupo>
-    <p class="etiqueta" data-revelar>{etiqueta}</p>
+  <div class="container grade">
+    <div class="texto" data-revelar-grupo>
+      <p class="etiqueta" data-revelar>{etiqueta}</p>
 
-    <h2 class="frases" id="manifesto-titulo">
-      {frases.map((frase) => <span class="frase" data-revelar>{frase}</span>)}
-    </h2>
+      <h2 class="frases" id="manifesto-titulo">
+        {frases.map((frase) => <span class="frase" data-revelar>{frase}</span>)}
+      </h2>
 
-    <p class="assinatura" data-revelar>{assinatura}</p>
+      <p class="assinatura" data-revelar>{assinatura}</p>
+    </div>
+
+    <div class="colagem">
+      <PiecesCollage />
+    </div>
   </div>
 </section>
 
@@ -42,9 +49,14 @@ const { etiqueta, frases, assinatura } = siteData.manifesto;
     pointer-events: none;
   }
 
-  .container {
+  .grade {
     position: relative;
     z-index: 1;
+
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+    align-items: center;
+    gap: clamp(32px, 6vw, 88px);
   }
 
   .frases {
@@ -75,6 +87,11 @@ const { etiqueta, frases, assinatura } = siteData.manifesto;
   }
 
   @media (max-width: 900px) {
+    .grade {
+      grid-template-columns: 1fr;
+      gap: 44px;
+    }
+
     .frases {
       max-width: 100%;
     }

@@ -1,6 +1,5 @@
 ---
 import logoSvg from "../../public/ftwo-logo.svg?raw";
-import PiecesCollage from "./PiecesCollage.astro";
 import { siteData } from "../data/sitedata";
 
 const { logoAlt, welcome } = siteData.hero;
@@ -16,8 +15,6 @@ const { logoAlt, welcome } = siteData.hero;
   </div>
   <div class="noise" aria-hidden="true"></div>
 
-  <PiecesCollage />
-
   <div class="content" id="hero-content">
     <div class="intro" id="hero-intro">
       <h1 class="brand">
@@ -31,13 +28,12 @@ const { logoAlt, welcome } = siteData.hero;
 </section>
 
 <script>
-  import { animate, stagger } from "motion";
+  import { animate } from "motion";
 
   const content = document.querySelector<HTMLElement>("#hero-content");
   const intro = document.querySelector<HTMLElement>("#hero-intro");
   const welcome = document.querySelector<HTMLElement>("#hero-welcome");
   const logo = document.querySelector<HTMLElement>("#ftwo-logo");
-  const pieces = Array.from(document.querySelectorAll<HTMLElement>("#hero-pieces .piece"));
   const paths = logo ? Array.from(logo.querySelectorAll("path")) : [];
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -51,11 +47,6 @@ const { logoAlt, welcome } = siteData.hero;
   // visualDuration é o tempo de movimento visível — equivale ao "response" da Apple.
   const SETTLE_SPRING = { type: "spring", bounce: 0, visualDuration: 1.1 } as const;
   const WELCOME_SPRING = { type: "spring", bounce: 0, visualDuration: 0.9, delay: 0.5 } as const;
-
-  // Peças: leve repique, porque cada uma "assenta" na composição.
-  const PIECE_SPRING = { type: "spring", bounce: 0.18, visualDuration: 0.75 } as const;
-  const PIECE_STAGGER = 0.22;
-  const PIECES_START = 0.7;
 
   function drawLogo() {
     paths.forEach((path, index) => {
@@ -114,15 +105,6 @@ const { logoAlt, welcome } = siteData.hero;
     if (logo) animate(logo, { scale: settledScale }, SETTLE_SPRING);
     animate(intro, { x: 0, y: lift }, SETTLE_SPRING);
     animate(welcome, { opacity: [0, 1], y: [14, 0] }, WELCOME_SPRING);
-
-    // As peças entram uma a uma, na ordem em que estão no sitedata.
-    if (pieces.length) {
-      animate(
-        pieces,
-        { opacity: [0, 1], y: [34, 0], scale: [0.94, 1] },
-        { ...PIECE_SPRING, delay: stagger(PIECE_STAGGER, { startDelay: PIECES_START }) }
-      );
-    }
   }
 
   if (content && intro && welcome && paths.length) {

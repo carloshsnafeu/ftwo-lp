@@ -4,7 +4,7 @@ import { siteData } from "../data/sitedata";
 const { pecas } = siteData.hero;
 ---
 
-<div class="pieces" id="hero-pieces" aria-label="Peças criadas pela ftwo">
+<div class="pieces" aria-label="Peças criadas pela ftwo" data-revelar-grupo>
   {
     pecas.map((peca) => (
       <img
@@ -13,23 +13,20 @@ const { pecas } = siteData.hero;
         alt={peca.alt}
         width={peca.w}
         height={peca.h}
-        loading="eager"
+        loading="lazy"
         decoding="async"
+        data-revelar
       />
     ))
   }
 </div>
 
 <style>
+  /* Preenche a coluna da grade que a recebe; a proporção interna é quem
+     mantém a composição das peças sobrepostas. */
   .pieces {
-    position: absolute;
-    z-index: 2;
-
-    top: 50%;
-    right: clamp(20px, 4vw, 64px);
-    transform: translateY(-50%);
-
-    width: min(46vw, 700px);
+    position: relative;
+    width: 100%;
     aspect-ratio: 1.02;
 
     pointer-events: none;
@@ -40,11 +37,8 @@ const { pecas } = siteData.hero;
     display: block;
     height: auto;
 
-    /* Sombra funda separa as peças do gradiente atrás. */
+    /* Sombra funda separa as peças do fundo atrás. */
     filter: drop-shadow(0 18px 38px rgba(0, 0, 0, 0.45));
-
-    /* Estado inicial: o script anima a entrada uma a uma. */
-    opacity: 0;
   }
 
   /* As peças se sobrepõem: a ordem no DOM define quem fica por cima. */
@@ -84,19 +78,8 @@ const { pecas } = siteData.hero;
 
   @media (max-width: 900px) {
     .pieces {
-      top: auto;
-      bottom: 4%;
-      right: 50%;
-
-      width: min(86vw, 460px);
-      transform: translateX(50%);
-    }
-  }
-
-  /* Sem animação de entrada, as peças precisam já estar visíveis. */
-  @media (prefers-reduced-motion: reduce) {
-    .piece {
-      opacity: 1;
+      max-width: 460px;
+      margin-inline: auto;
     }
   }
 </style>
