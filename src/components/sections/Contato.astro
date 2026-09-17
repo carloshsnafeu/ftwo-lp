@@ -1,7 +1,7 @@
 ---
 import { siteData } from "../../data/sitedata";
 
-const { etiqueta, titulo, apoio, telefone, whatsapp, site, botao, disclaimer, campos } =
+const { etiqueta, titulo, apoio, telefone, whatsapp, email, botao, disclaimer, campos } =
   siteData.contato;
 
 const telefoneLink = `https://wa.me/${whatsapp}`;
@@ -25,9 +25,9 @@ const telefoneLink = `https://wa.me/${whatsapp}`;
           <span class="atalho-rotulo">WhatsApp</span>
           <span class="atalho-valor">{telefone}</span>
         </a>
-        <a class="atalho" href={`https://${site}`} target="_blank" rel="noopener">
-          <span class="atalho-rotulo">Site</span>
-          <span class="atalho-valor">{site}</span>
+        <a class="atalho" href={`mailto:${email}`}>
+          <span class="atalho-rotulo">E-mail</span>
+          <span class="atalho-valor">{email}</span>
         </a>
       </div>
     </div>

@@ -1,5 +1,4 @@
 ---
-import PiecesCollage from "../PiecesCollage.astro";
 import { siteData } from "../../data/sitedata";
 
 const { etiqueta, titulo, apoio, familias } = siteData.servicos;
@@ -8,96 +7,73 @@ const { etiqueta, titulo, apoio, familias } = siteData.servicos;
 <section class="servicos secao grao" id="servicos" aria-labelledby="servicos-titulo">
   <div class="container">
     <header class="abertura" data-revelar-grupo>
-      <p class="etiqueta" data-revelar>{etiqueta}</p>
-      <h2 class="titulo-secao" id="servicos-titulo" data-revelar>{titulo}</h2>
-      <p class="texto-apoio abertura-apoio" data-revelar>{apoio}</p>
+      <div class="abertura-texto">
+        <p class="etiqueta" data-revelar>{etiqueta}</p>
+        <h2 class="titulo-secao" id="servicos-titulo" data-revelar>{titulo}</h2>
+        <p class="texto-apoio abertura-apoio" data-revelar>{apoio}</p>
+      </div>
+
+      <img
+        class="abertura-imagem"
+        src="/mockups/xeque-mate.webp"
+        alt=""
+        width="1302"
+        height="1763"
+        loading="lazy"
+        decoding="async"
+        aria-hidden="true"
+        data-revelar
+      />
     </header>
 
     {
-      familias.map((familia) => {
-        const destacados = familia.itens.filter((item) => "colagem" in item);
-        const normais = familia.itens.filter((item) => !("colagem" in item));
+      familias.map((familia) => (
+        <div class="familia">
+          <h3 class="familia-nome" data-revelar data-revelar-grupo>
+            <span class="familia-marca" aria-hidden="true" />
+            {familia.nome}
+          </h3>
 
-        return (
-          <div class="familia">
-            <h3 class="familia-nome" data-revelar data-revelar-grupo>
-              <span class="familia-marca" aria-hidden="true" />
-              {familia.nome}
-            </h3>
-
-            <div class="cartoes-wrap" data-revelar-grupo>
-              {destacados.map((item) => (
-                <article class="cartao cartao--marca" data-revelar>
-                  {"colagem" in item && item.colagem && (
-                    <div class="cartao-colagem">
-                      <PiecesCollage pecas={item.colagem} />
-                    </div>
-                  )}
-
-                  <div class="cartao-texto">
-                    <h4 class="cartao-nome">{item.nome}</h4>
-                    <p class="cartao-resumo">{item.resumo}</p>
-
-                    <details class="detalhe" name={`servico-${familia.id}`}>
-                      <summary>
-                        <span class="detalhe-rotulo">Ver tudo que entra</span>
-                        <span class="detalhe-contagem">{item.lista.length}</span>
-                      </summary>
-
-                      <div class="detalhe-corpo">
-                        <ul class="lista">
-                          {item.lista.map((linha) => (
-                            <li>{linha}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    </details>
+          <div class="cartoes" data-revelar-grupo>
+            {familia.itens.map((item) => (
+              <article class={`cartao${"imagem" in item ? " cartao--com-imagem" : ""}`} data-revelar>
+                {"imagem" in item && item.imagem && (
+                  <div class="cartao-imagem">
+                    <img
+                      src={item.imagem.src}
+                      alt={item.imagem.alt}
+                      width={item.imagem.w}
+                      height={item.imagem.h}
+                      loading="lazy"
+                      decoding="async"
+                    />
                   </div>
-                </article>
-              ))}
+                )}
 
-              <div class="cartoes">
-                {normais.map((item) => (
-                  <article class={`cartao${"imagem" in item ? " cartao--com-imagem" : ""}`} data-revelar>
-                    {"imagem" in item && item.imagem && (
-                      <div class="cartao-imagem">
-                        <img
-                          src={item.imagem.src}
-                          alt={item.imagem.alt}
-                          width={item.imagem.w}
-                          height={item.imagem.h}
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                    )}
+                <div class="cartao-texto">
+                  <h4 class="cartao-nome">{item.nome}</h4>
+                  <p class="cartao-resumo">{item.resumo}</p>
 
-                    <div class="cartao-texto">
-                      <h4 class="cartao-nome">{item.nome}</h4>
-                      <p class="cartao-resumo">{item.resumo}</p>
+                  <details class="detalhe" name={`servico-${familia.id}`}>
+                    <summary>
+                      <span class="detalhe-rotulo">Ver tudo que entra</span>
+                      <span class="detalhe-contagem">{item.lista.length}</span>
+                    </summary>
 
-                      <details class="detalhe" name={`servico-${familia.id}`}>
-                        <summary>
-                          <span class="detalhe-rotulo">Ver tudo que entra</span>
-                          <span class="detalhe-contagem">{item.lista.length}</span>
-                        </summary>
-
-                        <div class="detalhe-corpo">
-                          <ul class="lista">
-                            {item.lista.map((linha) => (
-                              <li>{linha}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      </details>
+                    <div class="detalhe-corpo">
+                      <ul class="lista">
+                        {item.lista.map((linha) => (
+                          <li>{linha}</li>
+                        ))}
+                      </ul>
                     </div>
-                  </article>
-                ))}
-              </div>
-            </div>
+                  </details>
+                </div>
+              </article>
+            ))}
           </div>
-        );
-      })
+        </div>
+      ))
     }
   </div>
 </section>
@@ -113,7 +89,23 @@ const { etiqueta, titulo, apoio, familias } = siteData.servicos;
   }
 
   .abertura {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: clamp(24px, 5vw, 64px);
+  }
+
+  .abertura-texto {
     max-width: 52ch;
+  }
+
+  /* Peças reais do portfólio ilustram cada card; aqui, na abertura, a peça é
+     a própria imagem da FTWO — o "xeque-mate" que abre o discurso do problema. */
+  .abertura-imagem {
+    flex: none;
+    width: auto;
+    height: clamp(220px, 24vw, 320px);
+    opacity: 0.92;
   }
 
   .titulo-secao {
@@ -197,30 +189,6 @@ const { etiqueta, titulo, apoio, familias } = siteData.servicos;
     height: 100%;
     object-fit: cover;
     object-position: center top;
-  }
-
-  /* O card de Marca & Branding é o único com trabalho real de portfólio: fica
-     em destaque, largura cheia, antes da grade dos demais serviços. */
-  .cartao--marca {
-    flex-direction: row;
-    margin-bottom: clamp(14px, 1.6vw, 20px);
-    min-height: 420px;
-  }
-
-  .cartao-colagem {
-    flex: 0 0 45%;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    padding: clamp(28px, 3.4vw, 44px);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.014));
-  }
-
-  .cartao-colagem :global(.pieces) {
-    width: 100%;
-    max-width: 380px;
   }
 
   .cartao-texto {
@@ -363,6 +331,17 @@ const { etiqueta, titulo, apoio, familias } = siteData.servicos;
   }
 
   @media (max-width: 900px) {
+    .abertura {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 28px;
+    }
+
+    .abertura-imagem {
+      align-self: center;
+      height: clamp(160px, 44vw, 220px);
+    }
+
     .cartao--com-imagem {
       grid-column: span 1;
       flex-direction: column;
@@ -375,16 +354,6 @@ const { etiqueta, titulo, apoio, familias } = siteData.servicos;
 
     .cartao-imagem img {
       object-position: center 20%;
-    }
-
-    .cartao--marca {
-      flex-direction: column;
-      min-height: 0;
-    }
-
-    .cartao-colagem {
-      flex: none;
-      padding: 28px;
     }
   }
 </style>

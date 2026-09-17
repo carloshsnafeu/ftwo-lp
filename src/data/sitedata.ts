@@ -30,7 +30,7 @@ export const siteData = {
 
   problema: {
     etiqueta: "O ponto de virada",
-    dado: ["6 em cada 10", "empresas brasileiras", "não sobrevivem 5 anos."],
+    dado: ["6 em cada 10 empresas", "brasileiras não sobrevivem", "5 anos."],
     destaque: "Não é falta de ideia. É falta de estrutura.",
     apoio:
       "Você não precisa de mais um fornecedor, precisa de um parceiro que una marca, presença e tecnologia.",
@@ -39,13 +39,16 @@ export const siteData = {
   manifesto: {
     etiqueta: "Quem é a FTWO",
     /**
-     * Um texto corrido só, com três níveis de ênfase por trecho:
-     * "conectivo" (apagado), "forte" (branco, peso alto) e "destaque"
-     * (gradiente da marca). É isso que cria a hierarquia, não o tamanho.
+     * Um texto corrido só, com três níveis de ênfase por trecho: "conectivo"
+     * (branco, peso normal), "forte" (branco, negrito — só a palavra FTWO) e
+     * "destaque" (gradiente da marca, para as duas frases-chave). É isso que
+     * cria a hierarquia, não o tamanho.
      */
     texto: [
-      { valor: "A FTWO existe para mudar essa equação: ", enfase: "conectivo" },
-      { valor: "unir marca, presença digital e tecnologia", enfase: "forte" },
+      { valor: "A ", enfase: "conectivo" },
+      { valor: "FTWO", enfase: "forte" },
+      { valor: " existe para mudar essa equação: ", enfase: "conectivo" },
+      { valor: "unir marca, presença digital e tecnologia", enfase: "destaque" },
       {
         valor: " para que cada empresa não apenas sobreviva ao seu momento mais difícil, ",
         enfase: "conectivo",
@@ -70,14 +73,6 @@ export const siteData = {
             id: "branding",
             nome: "Marca & Branding",
             resumo: "Da estratégia de mercado ao brandbook, com a marca aplicada em tudo que o cliente toca.",
-            /** Peças reais de portfólio. A ordem da lista é a ordem em que elas entram. */
-            colagem: [
-              { id: "banner", src: "/pecas/muzie-banner.webp", w: 852, h: 479, alt: "Campanha Muzie Essence" },
-              { id: "cracha", src: "/pecas/cracha.webp", w: 210, h: 1003, alt: "Crachá Comercial Nordestino" },
-              { id: "tubo", src: "/pecas/muzie-tubo.webp", w: 374, h: 363, alt: "Sérum Muzie Essence" },
-              { id: "camisa", src: "/pecas/camisa.webp", w: 565, h: 473, alt: "Uniforme Comercial Nordestino" },
-              { id: "sobreira", src: "/pecas/sobreira.webp", w: 375, h: 297, alt: "Identidade Sobreira Advogados" },
-            ],
             lista: [
               "Mercado e estratégia",
               "Benchmarking",
@@ -402,6 +397,7 @@ export const siteData = {
     /** Mensagem do botão flutuante de WhatsApp, presente em todo o site. */
     mensagemFlutuante: "Olá! Vim pelo site da FTWO e quero conversar sobre um projeto.",
     site: "ftwo.com.br",
+    email: "atendimento@ftwo.com",
     botao: "Falar com a FTWO",
     disclaimer: "Ao enviar, você será direcionado ao WhatsApp da FTWO com seus dados preenchidos.",
     campos: [

@@ -8,8 +8,9 @@
 
   --branco: #fff;
   --texto: rgba(255, 255, 255, 0.88);
-  --texto-suave: rgba(255, 255, 255, 0.58);
-  --texto-fraco: rgba(255, 255, 255, 0.38);
+  /* Contraste calibrado para ler bem em preto puro, não só num mockup claro. */
+  --texto-suave: rgba(255, 255, 255, 0.74);
+  --texto-fraco: rgba(255, 255, 255, 0.56);
 
   --vermelho: #ed2027;
   --laranja: #ff6b32;
@@ -30,7 +31,7 @@
   --subtitulo: 500 clamp(20px, 2vw, 27px) / 1.32 var(--fonte);
   --subtitulo-track: 0.004em;
 
-  --corpo: 300 clamp(16px, 1.25vw, 18px) / 1.68 var(--fonte);
+  --corpo: 400 clamp(16px, 1.25vw, 18px) / 1.68 var(--fonte);
   --corpo-track: 0.014em;
 
   --etiqueta: 500 12px / 1.2 var(--fonte);
