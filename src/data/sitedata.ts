@@ -46,12 +46,22 @@ export const siteData = {
 
   manifesto: {
     etiqueta: "Quem é a FTWO",
-    frases: [
-      "A FTWO existe para mudar essa equação:",
-      "unir marca, presença digital e tecnologia para que cada empresa não apenas sobreviva ao seu momento mais difícil,",
-      "mas conquiste o futuro que veio buscar.",
+    /**
+     * Um texto corrido só, com três níveis de ênfase por trecho:
+     * "conectivo" (apagado), "forte" (branco, peso alto) e "destaque"
+     * (gradiente da marca). É isso que cria a hierarquia, não o tamanho.
+     */
+    texto: [
+      { valor: "A FTWO existe para mudar essa equação: ", enfase: "conectivo" },
+      { valor: "unir marca, presença digital e tecnologia", enfase: "forte" },
+      {
+        valor: " para que cada empresa não apenas sobreviva ao seu momento mais difícil, ",
+        enfase: "conectivo",
+      },
+      { valor: "mas conquiste o futuro que veio buscar.", enfase: "destaque" },
     ],
-    assinatura: "Reagir é futuro. Vamos construí-lo juntos.",
+    assinatura: "Reagir é futuro.",
+    assinaturaApoio: "Vamos construí-lo juntos.",
   },
 
   servicos: {
@@ -308,6 +318,8 @@ export const siteData = {
   },
 
   time: {
+    /** Desligada por enquanto. Virar para true religa a seção no site. */
+    ativo: false,
     etiqueta: "Quem faz",
     titulo: "Gente, não fornecedor",
     pessoas: [

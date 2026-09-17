@@ -2,7 +2,7 @@
 import PiecesCollage from "../PiecesCollage.astro";
 import { siteData } from "../../data/sitedata";
 
-const { etiqueta, frases, assinatura } = siteData.manifesto;
+const { etiqueta, texto, assinatura, assinaturaApoio } = siteData.manifesto;
 ---
 
 <section class="manifesto secao grao" id="manifesto" aria-labelledby="manifesto-titulo">
@@ -10,25 +10,48 @@ const { etiqueta, frases, assinatura } = siteData.manifesto;
 
   <div class="container grade">
     <div class="texto" data-revelar-grupo>
+      <span class="aspas" aria-hidden="true">“</span>
+
       <p class="etiqueta" data-revelar>{etiqueta}</p>
 
-      <h2 class="frases" id="manifesto-titulo">
-        {frases.map((frase) => <span class="frase" data-revelar>{frase}</span>)}
+      <h2 class="declaracao" id="manifesto-titulo" data-revelar>
+        {texto.map((trecho) => <span class={`trecho trecho--${trecho.enfase}`}>{trecho.valor}</span>)}
       </h2>
 
-      <p class="assinatura" data-revelar>{assinatura}</p>
+      <div class="carimbo" data-revelar>
+        <span class="carimbo-barra" aria-hidden="true"></span>
+        <p class="carimbo-texto">
+          <strong class="assinatura">{assinatura}</strong>
+          <span class="assinatura-apoio">{assinaturaApoio}</span>
+        </p>
+      </div>
     </div>
 
     <div class="colagem">
-      <PiecesCollage />
+      <div class="colagem-limite">
+        <PiecesCollage />
+      </div>
     </div>
   </div>
 </section>
 
 <style>
+  /* Cabe numa tela só, como a intro: a hierarquia por peso/cor já carrega o
+     impacto, então o tamanho pôde encolher sem perder força. */
   .manifesto {
+    min-height: 100svh;
+
+    display: flex;
+    align-items: center;
+
+    padding-block: clamp(64px, 9vh, 110px);
+
     background: var(--preto);
     overflow: hidden;
+  }
+
+  .manifesto .container {
+    width: 100%;
   }
 
   /* O gradiente da intro volta aqui, mas rebaixado: presença, não protagonismo. */
@@ -56,34 +79,111 @@ const { etiqueta, frases, assinatura } = siteData.manifesto;
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
     align-items: center;
-    gap: clamp(32px, 6vw, 88px);
+    gap: clamp(24px, 4vw, 56px);
   }
 
-  .frases {
-    margin: clamp(22px, 3vw, 38px) 0 0;
-    max-width: 22ch;
-
-    font: var(--titulo);
-    letter-spacing: var(--titulo-track);
-    color: var(--branco);
+  .texto {
+    position: relative;
   }
 
-  .frase {
-    display: block;
+  /* Trava a colagem num teto menor: com o texto mais compacto, ela não pode
+     virar o elemento mais alto da seção. */
+  .colagem-limite {
+    max-width: 380px;
+    margin-inline: auto;
+  }
+
+  /* Âncora gráfica: marca a seção como declaração, não como parágrafo comum. */
+  .aspas {
+    position: absolute;
+    z-index: -1;
+    left: clamp(-18px, -2vw, -8px);
+    top: clamp(-58px, -5.4vw, -36px);
+
+    font-family: var(--fonte);
+    font-weight: 700;
+    font-size: clamp(90px, 11vw, 156px);
+    line-height: 1;
+
+    background: var(--brasa);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    opacity: 0.16;
+
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .declaracao {
+    margin: clamp(12px, 1.6vw, 18px) 0 0;
+    max-width: 40ch;
+
+    font-family: var(--fonte);
+    font-size: clamp(19px, 2.3vw, 31px);
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: -0.012em;
     text-wrap: balance;
   }
 
-  .frase:not(:first-child) {
-    margin-top: clamp(12px, 1.4vw, 20px);
-    color: var(--texto);
+  .trecho--conectivo {
+    color: var(--texto-fraco);
+    font-weight: 400;
+  }
+
+  .trecho--forte {
+    color: var(--branco);
+    font-weight: 700;
+  }
+
+  .trecho--destaque {
+    font-weight: 800;
+
+    background: var(--brasa);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* O "carimbo": a assinatura vira o fechamento com peso próprio, não só uma
+     linha vermelha a mais no fim do parágrafo. */
+  .carimbo {
+    display: flex;
+    align-items: baseline;
+    gap: clamp(14px, 1.6vw, 20px);
+
+    margin-top: clamp(22px, 3vw, 36px);
+  }
+
+  .carimbo-barra {
+    flex: none;
+    align-self: stretch;
+    width: 3px;
+    border-radius: 999px;
+    background: var(--brasa);
+  }
+
+  .carimbo-texto {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 14px;
+    row-gap: 6px;
   }
 
   .assinatura {
-    margin: clamp(30px, 4vw, 52px) 0 0;
+    font-family: var(--fonte);
+    font-size: clamp(19px, 2.1vw, 26px);
+    font-weight: 800;
+    letter-spacing: -0.015em;
+    color: var(--branco);
+  }
 
-    font: var(--subtitulo);
-    letter-spacing: var(--subtitulo-track);
-    color: var(--vermelho);
+  .assinatura-apoio {
+    font: var(--corpo);
+    color: var(--texto-suave);
   }
 
   @media (max-width: 900px) {
@@ -92,8 +192,13 @@ const { etiqueta, frases, assinatura } = siteData.manifesto;
       gap: 44px;
     }
 
-    .frases {
+    .declaracao {
       max-width: 100%;
+    }
+
+    .aspas {
+      top: -34px;
+      font-size: clamp(80px, 22vw, 110px);
     }
   }
 </style>

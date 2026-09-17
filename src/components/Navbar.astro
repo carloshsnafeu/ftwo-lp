@@ -7,7 +7,7 @@ const { logoAlt } = siteData.hero;
 const links = [
   { rotulo: "Serviços", href: "#servicos" },
   { rotulo: "Como trabalhamos", href: "#como-trabalhamos" },
-  { rotulo: "Time", href: "#time" },
+  ...(siteData.time.ativo ? [{ rotulo: "Time", href: "#time" }] : []),
   { rotulo: "Planos", href: "#planos" },
 ];
 ---
