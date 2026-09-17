@@ -13,7 +13,7 @@ export const siteData = {
    * cliente, mas nada é indexado. Virar para true é o único passo para
    * publicar de vez.
    */
-  indexavel: false,
+  indexavel: true,
 
   meta: {
     title: "FTWO Digital: marca, presença digital e tecnologia",
