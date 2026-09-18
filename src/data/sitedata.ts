@@ -395,7 +395,7 @@ export const siteData = {
     /** Mensagem do botão flutuante de WhatsApp, presente em todo o site. */
     mensagemFlutuante: "Olá! Vim pelo site da FTWO e quero conversar sobre um projeto.",
     site: "ftwo.com.br",
-    email: "atendimento@ftwo.com",
+    email: "atendimento@ftwo.com.br",
     botao: "Falar com a FTWO",
     disclaimer: "Ao enviar, você será direcionado ao WhatsApp da FTWO com seus dados preenchidos.",
     campos: [

@@ -28,8 +28,9 @@ Agente-Landing-Claude-v1.0.0.zip
 00 - Partes das Peças/
 
 # Originais de imagens de estoque — o site usa as versões otimizadas em
-# public/mockups/. O PSD sozinho tem 38 MB.
+# public/mockups/.
 01 - Xadrez Girando/digital-brain-*
+01 - Xadrez Girando/9ba39af5-*
 
 # Pacotes de deploy
 dist_*.zip
