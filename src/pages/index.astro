@@ -106,7 +106,14 @@ const dadosEstruturados = {
     <meta name="theme-color" content={themeColor} />
     <link rel="canonical" href={`${url}/`} />
     {!siteData.indexavel && <meta name="robots" content="noindex, nofollow" />}
+    <!-- SVG primeiro (navegadores modernos); ICO e PNG cobrem contextos que
+         não leem SVG como ícone (barra de tarefas, favoritos, Safari antigo)
+         — sem eles o navegador cai no favicon.ico, que 404 direto no erro
+         genérico da hospedagem em vez do nosso. -->
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
     <meta property="og:type" content="website" />
